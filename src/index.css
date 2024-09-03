@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@keyframes ambientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-ambient {
+  animation: ambientMove 20s ease infinite;
+}
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
