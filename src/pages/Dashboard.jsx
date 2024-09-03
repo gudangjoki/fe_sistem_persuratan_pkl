@@ -1,13 +1,13 @@
 import Sidebar from '../components/SidebarHeader';
-import { useEffect } from 'react';
-import useLogin from '../hooks/useLogin';
+// import { useEffect } from 'react';
+// import useLogin from '../hooks/useLogin';
 
 const Dashboard = () => {
-    const login = useLogin();
+    // const login = useLogin();
 
-    useEffect(() => {
-        login();
-    }, [login]);
+    // useEffect(() => {
+    //     login();
+    // }, [login]);
 
     return (
         <Sidebar />

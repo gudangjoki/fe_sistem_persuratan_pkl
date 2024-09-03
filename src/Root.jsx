@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ForgotAccount from "./pages/ForgotAccount";
 import "preline/preline";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/Dashboard";
 import RoleBasedRoutes from "./components/RoleBasedRoutes";
 
 
@@ -22,10 +22,15 @@ const Root = () => {
       <Routes>
       <Route element={<RoleBasedRoutes allowedRoles={["aa", "admin"]} />}>
         <Route path="/home" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/login" element={<Login />} />
+
         <Route path="/forgot-account" element={<ForgotAccount />} />
       </Route>
+      <Route element={<RoleBasedRoutes allowedRoles={["no_auth"]} />}>
+        <Route path="/login" element={<Login />} />
+      </Route>
+
+      <Route path="/dashboard" element={<Dashboard />} />
+      
       </Routes>
     </Suspense>
   );

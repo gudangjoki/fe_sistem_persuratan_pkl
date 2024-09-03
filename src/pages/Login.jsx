@@ -1,14 +1,76 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+// import { useAuth } from '../hooks/useAuth';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const bg = "/bg.jpg";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const [credential, setCredential] = useState({
+    "email": "",
+    "password": ""
+  });
+
+  const [errMsg, setErrMsg] = useState("");
+
+  // const { url, setUser, saveTokenToCookie } = useAuth();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+
+  const changeCredential = (e) => {
+    const { name, value } = e.target;
+    setCredential((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  useEffect(() => {
+    console.log(credential)
+  }, [credential])
+
+  const handleSubmitCredential = async (e) => {
+    e.preventDefault();
+
+    const options = {
+      headers: {
+          'Content-Type': 'application/json',
+      }, withCredential: true
+    };
+
+    try {
+      const response = await axios.post("http://localhost:8000/api/login", credential, options);
+      const { access_token, refresh_token } = response.data;
+      if (access_token && refresh_token) {
+        Cookies.set('access_token', access_token);
+        Cookies.set('refresh_token', refresh_token, { expires: 7 });
+        setSuccess(true);
+        // setUser(response.data);
+      }
+    } catch (err) {
+      if (err.response?.status === 400) {
+        setErrMsg(err.response.data.message);
+        // console.log(err.response.data.message);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (success) navigate('/dashboard');
+
+    return () => {
+      setCredential(null);
+      setSuccess(false);
+    }
+  }, [success])
 
   return (
     <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-100">
@@ -23,6 +85,7 @@ const Login = () => {
         transition={{ duration: 0.6 }}   // Animation duration
       >
         <div className="p-4 sm:p-7">
+          { errMsg && <>{errMsg}</>}
           <div className="text-center">
             <h1 className="block text-2xl font-bold text-gray-800">Sign in</h1>
           </div>
@@ -40,6 +103,7 @@ const Login = () => {
                       required
                     //   aria-describedby="email-error"
                       placeholder="Enter your email"
+                      onChange={changeCredential}
                     />
                   </div>
                   <p className="hidden mt-2 text-xs text-red-600" id="email-error">
@@ -63,6 +127,8 @@ const Login = () => {
                       type={passwordVisible ? 'text' : 'password'}
                       className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                       placeholder="Enter your password"
+                      name="password"
+                      onChange={changeCredential}
                     />
                     <button
                       type="button"
@@ -116,6 +182,7 @@ const Login = () => {
                 </div>
 
                 <button
+                  onClick={handleSubmitCredential}
                   type="submit"
                   className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                 >

@@ -11,8 +11,8 @@ const useLogin = () => {
     const handleLogin = async () => {
         const body = {
             // isi data
-            email: "",
-            password: ""
+            email: "agunggusti95@gmail.com",
+            password: "Asa1234!"
         };
         const options = {
             headers: {

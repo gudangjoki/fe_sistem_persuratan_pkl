@@ -1,24 +1,64 @@
-// import { create, StateCreator } from "zustand";
-// import { persist } from "zustand/middleware";
+import { createContext, useState } from "react";
+import PropTypes from 'prop-types';
 
-// interface User {
-//   accessToken: string;
+// import axios from 'axios';
+import Cookies from 'js-cookie';
+
+// export interface User {
+//   email: string;
+//   password: string;
+//   fname: string;
+//   lname: string;
 // }
 
-// interface UserState {
+// interface Props {
+//   children?: ReactNode;
+// }
+
+// interface AuthenticationContextType {
 //   user: User | null;
-//   setCredentials: (user: User) => void;
-//   removeCredentials: () => void;
+//   setUser: (user: User | null | ((prevUser: User | null) => User)) => void;
+//   url: string;
+//   setUrl: (url: string) => void;
 // }
 
-// const userStoreSlice: StateCreator<UserState> = (set) => ({
-//   user: null,
-//   setCredentials: (user) => set({ user }),
-//   removeCredentials: () => set({ user: null }),
-// });
+export const AuthContext = createContext({
+  user: null,
+  setUser: () => {},
+  url: "",
+  setUrl: () => {},
+});
 
-// const persistedUserStore = persist<UserState>(userStoreSlice, {
-//   name: "user",
-// });
+export const AuthenticationProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
+  const [url, setUrl] = useState("http://localhost:8000/api/login");
 
-// export const useUserStore = create(persistedUserStore);
+  const saveTokenToCookie = (access_token, refresh_token) => {
+    Cookies.set('access_token', access_token);
+    Cookies.set('refresh_token', refresh_token, { expires: 7 });
+  };
+
+
+  const authenticationContextValue = {
+    user,
+    setUser,
+    url,
+    setUrl,
+    accessToken,
+    setAccessToken,
+    saveTokenToCookie
+  };
+
+  return (
+    <AuthContext.Provider value={authenticationContextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+AuthenticationProvider.propTypes = {
+    children: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+export default AuthContext;

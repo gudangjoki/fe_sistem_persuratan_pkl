@@ -1,4 +1,4 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { useLocation, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
@@ -17,6 +17,8 @@ const RoleBasedRoutes = ({ allowedRoles }) => {
   const location = useLocation();
   const [decoded, setDecoded] = useState(null);
   const [loading, setLoading] = useState(true);
+  // const [isAuth, setIsAuth] = useState(true);
+  const navigate = useNavigate();
 
   console.log(allowedRoles);
 
@@ -28,9 +30,8 @@ const RoleBasedRoutes = ({ allowedRoles }) => {
           const decodedToken = jwtDecode(token);
           setDecoded(decodedToken);
           console.log(decodedToken)
-          // console.log("Decoded token role:", decodedToken.role);
-          // console.log(allowedRoles)
           setLoading(false);
+          // setIsAuth(true);
         } catch (error) {
           console.error("Error decoding token:", error);
         }
@@ -44,11 +45,9 @@ const RoleBasedRoutes = ({ allowedRoles }) => {
   }, []);
 
   useEffect(() => {
-    // console.log(decoded?.roles);
     const roles = decoded?.roles
     console.log(roles);
     if (!roles) return;
-    // const isAllowed = allowedRoles?.includes(roles[0]);
 
     const isRoleAllowed = roleAuthorized(allowedRoles, roles);
     if (allowedRoles[0] == '') {
@@ -57,18 +56,29 @@ const RoleBasedRoutes = ({ allowedRoles }) => {
     }
     console.log(isRoleAllowed);
     setGuarded(isRoleAllowed);
-  }, [decoded, allowedRoles])
+    setLoading(false);
+  }, [decoded, allowedRoles]);
 
-  while (loading) return <div>Loading....</div>;
+  useEffect(() => {
+    const loadTimeout = setTimeout(() => {
+      if (loading && location.pathname !== "/login") {
+        alert("redirecting to login menu...");
+        navigate("/login");
+      }
+    }, 3000);
+    return () => clearTimeout(loadTimeout);
+  }, [loading, navigate, location.pathname]);
 
-  // allowedRoles[0] == decoded?.role
+  if (loading && location.pathname !== '/login') return <div>Loading.... you will redirected to login menu...</div>;
+
+
   return decoded && guarded ? (
-    // return decoded ? (
     <Outlet context={{ "role": decoded?.role }} />
-  ) : allowedRoles[0] != "" ? (
-    <Navigate to="/login" state={{ from: location }} replace />
+  ) : allowedRoles[0] != "" && !loading ? (
+    // bisa ditambahin redirect ke tempat awal user
+    <Navigate to="/" state={{ from: location }} replace />
   ) : (
-    <Navigate to={location.state?.from} state={{ from: location }} replace />
+    <Navigate to="/login" state={{ from: location }} replace />
   );
 };
 
