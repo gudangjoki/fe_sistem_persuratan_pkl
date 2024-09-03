@@ -1,6 +1,18 @@
 import Sidebar from '../components/SidebarHeader';
-export default function Dashboard() {
+import { useEffect } from 'react';
+import useLogin from '../hooks/useLogin';
+
+const Dashboard = () => {
+    const login = useLogin();
+
+    useEffect(() => {
+        login();
+    }, [login]);
+
     return (
-      <Sidebar />
+        <Sidebar />
     );
-}
+};
+
+export default Dashboard;
+

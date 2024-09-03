@@ -4,7 +4,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ForgotAccount from "./pages/ForgotAccount";
 import "preline/preline";
-import Dashboard from './pages/dashboard';
+import Dashboard from "./pages/dashboard";
+import RoleBasedRoutes from "./components/RoleBasedRoutes";
 
 
 const Root = () => {
@@ -19,10 +20,12 @@ const Root = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
+      <Route element={<RoleBasedRoutes allowedRoles={["aa", "admin"]} />}>
         <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/forgot-account" element={<ForgotAccount />} />
+      </Route>
       </Routes>
     </Suspense>
   );
