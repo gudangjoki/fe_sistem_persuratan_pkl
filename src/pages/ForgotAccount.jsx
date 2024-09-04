@@ -1,9 +1,39 @@
 
+import axios from 'axios';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const bg = "/bg.jpg";
 
-const ForgotAccount = () => {
+const ForgotAccount = () => {   
+    const navigate = useNavigate();
+    const [email, setEmail] = useState();
+
+    const changeEmail = (e) => {
+        setEmail((prev) => ({
+            ...prev,
+            email: e.target.value
+        }));
+    }
+
+    const submitFormEmail = async (e) => {
+        e.preventDefault();
+
+        const BASE_URL = "http://localhost:8000/api/forget_password"
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        };
+
+        try {
+            const response = await axios.post(BASE_URL, email, options);
+            console.log(response.data);
+        } catch(err) {
+            console.error(err);
+        }
+    }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div
@@ -21,7 +51,12 @@ const ForgotAccount = () => {
                 <h1 className="block text-2xl font-bold text-gray-800">Forgot password?</h1>
                     <p className="mt-2 text-sm text-gray-600">
                         Remember your password?
-                        <a className="ml-2 font-medium text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline" href="/login">
+                        <a 
+                        className="ml-2 font-medium text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline cursor-pointer"
+                        onClick = {() => {
+                            navigate('../login');
+                        }}
+                        >
                         Sign in here
                         </a>
                     </p>
@@ -33,7 +68,7 @@ const ForgotAccount = () => {
                         <div>
                             <label htmlFor="email" className="block mb-2 text-sm">Email address</label>
                             <div className="relative">
-                                <input type="email" id="email" name="email" className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg dark:bg-slate-900 dark:border-gray-700" required aria-describedby="email-error" placeholder="Enter your email" />
+                                <input type="email" id="email" onChange={changeEmail} name="email" className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg dark:bg-slate-900 dark:border-gray-700" required aria-describedby="email-error" placeholder="Enter your email" />
                                 <div className="absolute inset-y-0 hidden pointer-events-none end-0 pe-3">
                                     <svg className="text-red-500 size-5" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
                                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
@@ -43,7 +78,7 @@ const ForgotAccount = () => {
                             <p className="hidden mt-2 text-xs text-red-600" id="email-error">Please include a valid email address so we can get back to you</p>
                         </div>
 
-                        <button type="submit" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Reset password</button>
+                        <button type="submit" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" onClick={submitFormEmail}>Reset password</button>
                     </div>
                 </form>
                 </div>

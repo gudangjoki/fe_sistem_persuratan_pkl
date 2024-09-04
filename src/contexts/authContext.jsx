@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 // import axios from 'axios';
 import Cookies from 'js-cookie';
+import axios from "axios";
 
 // export interface User {
 //   email: string;
@@ -39,6 +40,39 @@ export const AuthenticationProvider = ({ children }) => {
     Cookies.set('refresh_token', refresh_token, { expires: 7 });
   };
 
+  const getAccessTokenFromCookie = () => {
+    return Cookies.get('access_token');
+  }
+
+  const getRefreshTokenFromCookie = () => {
+    const token = Cookies.get('refresh_token');
+    console.log(token);
+    return JSON.stringify({ refresh_token: token });
+  }
+
+  const BASE_URL = 'http://localhost:8000/api/refresh_token';
+
+  const getNewAccessToken = async () => {
+    const refreshToken = getRefreshTokenFromCookie();
+    const accessToken = getAccessTokenFromCookie();
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
+      withCredential: true
+    }
+    try {
+      const response = await axios.post(BASE_URL, refreshToken, options);
+      console.log(response.data);
+      Cookies.set('access_token', response.data.access_token, { expires: 1 / 1440 });
+      //
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
 
   const authenticationContextValue = {
     user,
@@ -47,7 +81,9 @@ export const AuthenticationProvider = ({ children }) => {
     setUrl,
     accessToken,
     setAccessToken,
-    saveTokenToCookie
+    saveTokenToCookie,
+    getNewAccessToken,
+    getAccessTokenFromCookie
   };
 
   return (
@@ -60,5 +96,3 @@ export const AuthenticationProvider = ({ children }) => {
 AuthenticationProvider.propTypes = {
     children: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
-
-export default AuthContext;

@@ -1,4 +1,8 @@
+import { useAuth } from "../hooks/useAuth";
+
 export default function SidebarHeader() {
+
+    const { getAccessTokenFromCookie, setUser } = useAuth();
     return(
         <div className="bg-gray-50 transition-all duration-300 lg:hs-overlay-layout-open:ps-[260px]">
             <main id="content">

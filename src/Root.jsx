@@ -6,32 +6,37 @@ import ForgotAccount from "./pages/ForgotAccount";
 import "preline/preline";
 import Dashboard from "./pages/Dashboard";
 import RoleBasedRoutes from "./components/RoleBasedRoutes";
-
+import { AuthenticationProvider } from "./contexts/AuthContext";
 
 const Root = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === 'function') {
+    if (
+      window.HSStaticMethods &&
+      typeof window.HSStaticMethods.autoInit === "function"
+    ) {
       window.HSStaticMethods.autoInit();
     }
   }, [location.pathname]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Routes>
-      <Route element={<RoleBasedRoutes allowedRoles={["aa", "admin"]} />}>
-        <Route path="/home" element={<Home />} />
-
-        <Route path="/forgot-account" element={<ForgotAccount />} />
-      </Route>
-      <Route element={<RoleBasedRoutes allowedRoles={["no_auth"]} />}>
-        <Route path="/login" element={<Login />} />
-      </Route>
-
-      <Route path="/dashboard" element={<Dashboard />} />
-      
-      </Routes>
+      <AuthenticationProvider>
+        <Routes>
+          <Route element={<RoleBasedRoutes allowedRoles={["aa", "admin"]} />}>
+            <Route path="/home" element={<Home />} />
+          </Route>
+          <Route element={<RoleBasedRoutes allowedRoles={["no_auth"]} />}>
+            <Route path="/login" element={<Login />} />
+          </Route>
+          
+          <Route path="/forgot-account" element={<ForgotAccount />} />
+          
+          <Route path="/dashboard" element={<Dashboard />} />
+          
+        </Routes>
+      </AuthenticationProvider>
     </Suspense>
   );
 };

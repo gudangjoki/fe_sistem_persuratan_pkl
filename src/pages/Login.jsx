@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const bg = "/bg.jpg";
 
 const Login = () => {
+  const { setAccessToken } = useAuth();
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -49,11 +51,13 @@ const Login = () => {
     try {
       const response = await axios.post("http://localhost:8000/api/login", credential, options);
       const { access_token, refresh_token } = response.data;
-      if (access_token && refresh_token) {
-        Cookies.set('access_token', access_token);
-        Cookies.set('refresh_token', refresh_token, { expires: 7 });
+      if (access_token) {
+        Cookies.set('access_token', access_token, { expires: 1 / 1440 });
+        if (Cookies.get('refresh_token') == null) {
+          Cookies.set('refresh_token', refresh_token, { expires: 7 });
+        }
         setSuccess(true);
-        // setUser(response.data);
+        setAccessToken(access_token);
       }
     } catch (err) {
       if (err.response?.status === 400) {
@@ -115,8 +119,11 @@ const Login = () => {
                   <div className="flex items-center justify-between">
                     <label htmlFor="password" className="block mb-2 text-sm">Password</label>
                     <a
-                      className="inline-flex items-center text-sm font-medium text-blue-600 gap-x-1 decoration-2 hover:underline focus:outline-none focus:underline"
-                      href="/forgot-account"
+                      className="cursor-pointer inline-flex items-center text-sm font-medium text-blue-600 gap-x-1 decoration-2 hover:underline focus:outline-none focus:underline"
+                      // href="/forgot-account"
+                      onClick={() => {
+                        navigate('../forgot-account');
+                      }}
                     >
                       Forgot password?
                     </a>
