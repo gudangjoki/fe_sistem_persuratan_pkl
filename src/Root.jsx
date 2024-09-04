@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import ForgotAccount from "./pages/ForgotAccount";
 import "preline/preline";
 import Dashboard from "./pages/Dashboard";
+import Verifikasi from "./pages/VerifikasiOTP";
+import ResetPassword from "./pages/ResetPassword";
 import RoleBasedRoutes from "./components/RoleBasedRoutes";
 import { AuthenticationProvider } from "./contexts/AuthContext";
 
@@ -32,6 +34,8 @@ const Root = () => {
           </Route>
           
           <Route path="/forgot-account" element={<ForgotAccount />} />
+          <Route path="/otp-veriffication" element={<Verifikasi />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           
           <Route path="/dashboard" element={<Dashboard />} />
           
