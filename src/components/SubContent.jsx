@@ -5,13 +5,19 @@ import UploadFile from "./DropFile";
 import SelectItem from "./SelectItem";
 import SelectMultiple from "./SelectMultiple";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Button from "./SingleButton";
 
 export default function SubContent() {
   // const {  } = useAuth();
   const { letterData, setLetterData } = useLetter();
 
   const [msgSuccess, setMsgSuccess] = useState("");
+
+  const [errMsg, setErrMsg] = useState(null);
+
+  const [errData, setErrData] = useState([]);
+  const [isMsgErr, setIsMsgErr] = useState(false);
 
   const token = Cookies.get("access_token");
 
@@ -36,11 +42,30 @@ export default function SubContent() {
       const { success, message } = response.data;
       if (success) {
         setMsgSuccess(message);
+        setLetterData({});
       }
     } catch (error) {
-      console.log(error);
+      const { errors, message } = error.response.data;
+      console.log(errors);
+      setErrMsg(error.response?.data);
     }
   };
+
+  useEffect(() => {
+    if (errMsg) {
+      let errs = [];
+      const { errors, message } = errMsg;
+      if (errors) {
+        for (const [key, value] of Object.entries(errors)) {
+          console.log(`${key}: ${value}`); // Logs "a 5", "b 7", "c 9"
+          errs[key] = value;
+        }
+        setErrData(errs);
+      }
+      setIsMsgErr(true);
+      console.log(errs);
+    }
+  }, [errMsg]);
 
   return (
     <div className="col-span-2 p-4 bg-white rounded-lg shadow-md lg:h-full">
@@ -86,7 +111,49 @@ export default function SubContent() {
         </div>
       )}
 
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
+      {isMsgErr && (
+        <div
+          className="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
+          role="alert"
+          tabIndex="-1"
+          aria-labelledby="hs-with-list-label"
+        >
+          <div className="flex">
+            <div className="shrink-0">
+              <svg
+                className="shrink-0 size-4 mt-0.5"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="m15 9-6 6"></path>
+                <path d="m9 9 6 6"></path>
+              </svg>
+            </div>
+            <div className="ms-4">
+              <h3 id="hs-with-list-label" className="text-sm font-semibold">
+                A problem has been occurred while submitting your data.
+              </h3>
+              <div className="mt-2 text-sm text-red-700 dark:text-red-400">
+                <ul className="list-disc space-y-1 ps-5">
+                  {errData.map((val, idx) => (
+                    <li key={idx}>{val}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <h2 className="text-xl font-semibold text-gray-800 dark:text-neutral-200 mt-6">
         Fill in the form
       </h2>
       <form>
@@ -172,13 +239,18 @@ export default function SubContent() {
             <UploadFile token={token} />
           </div>
           <div>
-            <button
+            <Button
+              name="btn-save-surat"
+              property="mt-5 px-10 "
+              content="Save"
+              saveLetter={submitNewLetter}
+            />
+            {/* <Button
               type="button"
               className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-              onClick={submitNewLetter}
+              
             >
-              Create Letter
-            </button>
+              Create Letter */}
           </div>
         </div>
       </form>
