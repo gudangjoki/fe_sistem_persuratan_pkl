@@ -28,12 +28,24 @@ export const AuthContext = createContext({
   setUser: () => {},
   url: "",
   setUrl: () => {},
+  otp: null,
+  setOtp: () => {},
+  indexPin: 0,
+  setIndexPin: () => {},
+  passReset: {},
+  setPassReset: () => {}
 });
 
 export const AuthenticationProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [passReset, setPassReset] = useState({
+    "password": "",
+    "confirm_password": ""
+  });
   const [accessToken, setAccessToken] = useState(null);
   const [url, setUrl] = useState("http://localhost:8000/api/login");
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const [indexPin, setIndexPin] = useState(0);
 
   const saveTokenToCookie = (access_token, refresh_token) => {
     Cookies.set('access_token', access_token);
@@ -83,7 +95,13 @@ export const AuthenticationProvider = ({ children }) => {
     setAccessToken,
     saveTokenToCookie,
     getNewAccessToken,
-    getAccessTokenFromCookie
+    getAccessTokenFromCookie,
+    otp,
+    setOtp,
+    indexPin,
+    setIndexPin,
+    passReset,
+    setPassReset
   };
 
   return (
