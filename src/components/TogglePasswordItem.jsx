@@ -1,6 +1,23 @@
+import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
+
 /* eslint-disable react/prop-types */
 export default function TogglePasswordItem(props) {
+
+  const { setPassReset, passReset } = useAuth();
   const { groupId } = props;
+
+  const changeInputPassword = (e) => {
+    const { name, value } = e.target;
+    setPassReset((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  }
+
+  useEffect(() => {
+    console.log(passReset);
+  }, [passReset]);
 
   return (
     <div className="space-y-5" data-hs-toggle-password-group>
@@ -17,6 +34,8 @@ export default function TogglePasswordItem(props) {
             type="password"
             className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
             placeholder="Enter new password"
+            name="password"
+            onChange={changeInputPassword}
           />
           <button
             type="button"
@@ -83,6 +102,8 @@ export default function TogglePasswordItem(props) {
             type="password"
             className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
             placeholder="Enter confirm password"
+            name="confirm_password"
+            onChange={changeInputPassword}
           />
           <button
             type="button"
