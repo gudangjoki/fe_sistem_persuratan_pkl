@@ -8,6 +8,10 @@ const getTokenFromCookie = () => {
   return Cookies.get('access_token');
 };
 
+const getPasswordResetFromCookie = () => {
+  return Cookies.get('role_pass_reset');
+}
+
 const roleAuthorized = (allowedRoles, userRoles) => {
   return userRoles.some((val) => allowedRoles.includes(val));
 };
@@ -24,6 +28,14 @@ const RoleBasedRoutes = ({ allowedRoles }) => {
 
   useEffect(() => {
     const fetchToken = async () => {
+      const resetPassRole = getPasswordResetFromCookie();
+      if (resetPassRole != null) {
+        console.log(resetPassRole)
+        setDecoded({ email: "", role: resetPassRole });
+        setLoading(false);
+        return;
+      }
+
       const token = getTokenFromCookie()
       if (token) {
         try {

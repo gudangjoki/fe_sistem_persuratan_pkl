@@ -33,7 +33,9 @@ export const AuthContext = createContext({
   indexPin: 0,
   setIndexPin: () => {},
   passReset: {},
-  setPassReset: () => {}
+  setPassReset: () => {},
+  email: "",
+  setEmail: () => {}
 });
 
 export const AuthenticationProvider = ({ children }) => {
@@ -46,6 +48,7 @@ export const AuthenticationProvider = ({ children }) => {
   const [url, setUrl] = useState("http://localhost:8000/api/login");
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [indexPin, setIndexPin] = useState(0);
+  const [email, setEmail] = useState("");
 
   const saveTokenToCookie = (access_token, refresh_token) => {
     Cookies.set('access_token', access_token);
@@ -101,7 +104,9 @@ export const AuthenticationProvider = ({ children }) => {
     indexPin,
     setIndexPin,
     passReset,
-    setPassReset
+    setPassReset,
+    email,
+    setEmail
   };
 
   return (

@@ -9,13 +9,14 @@ import { AxiosContentProvider } from '../contexts/AxiosReloadContext';
 
 const Dashboard = () => {
 
-    const { axiosReload } = useAxiosReload();
-    const { setUser } = useAuth();
     // const login = useLogin();
 
     // useEffect(() => {
     //     login();
     // }, [login]);
+
+    const { axiosReload } = useAxiosReload();
+    const { setUser } = useAuth();
 
     // baiknya buatkan komponen untuk profil 
     // agar semua pages bisa menjalankan fungsi axios reload

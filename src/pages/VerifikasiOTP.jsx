@@ -4,11 +4,16 @@ import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 const bg = "/bg.jpg";
 const VerifikasiOTP = () => {
   const navigate = useNavigate();
   const { otp } = useAuth();
+
+  const [errMsg, setErrMsg] = useState("");
+
+  const emailCookie = Cookies.get("email");
   const [timer, setTimer] = useState(120);
   // const [stop, setStop] = useState(false);
 
@@ -55,6 +60,7 @@ const VerifikasiOTP = () => {
       }
     } catch (error) {
       console.log(error.message);
+      setErrMsg(error.response.data?.message);
     }
   }
     return(
@@ -70,15 +76,18 @@ const VerifikasiOTP = () => {
           animate={{ opacity: 1, y: 0 }}   // Ends at normal position and fully visible
           transition={{ duration: 0.6 }}   // Animation duration
         >
+          {errMsg !== "" && <div className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" role="alert" tabIndex="-1" aria-labelledby="hs-soft-color-danger-label">
+            <span id="hs-soft-color-danger-label" className="font-bold">Danger</span> {errMsg}
+          </div>}
           <div className="p-4 sm:p-7">
             <div className="mb-10">
               <div className="text-center">
                 <h1 className="block text-2xl font-bold text-gray-800">OTP Verification</h1>
                 <p className="mt-2 text-sm text-gray-600">
-                  An Authentication code has been sent to <span className='font-bold text-blue-700'>example@gmail.com</span>
+                  An Authentication code has been sent to <span className='font-bold text-blue-700'>{emailCookie !== "" && emailCookie}</span>
                 </p>
                 <p className="mt-2 text-sm text-gray-600">
-                  Otp expired or cant found otp <span className='font-bold text-blue-700'>Resend code? {timer}</span>
+                  Otp expired or cant found otp. <span className='font-bold text-blue-700'>Resend code? {timer}</span>
                 </p>
               </div>
               <div className='mt-10 space-y-5'>
