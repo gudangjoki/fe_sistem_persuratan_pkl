@@ -1,13 +1,15 @@
 import UploadFile from './DropFile';
 import SelectItem from './SelectItem';
 import SelectMultiple from './SelectMultiple';
+import Button from './SingleButton';
 
 export default function SubContent() {
     return (
-        <div className="col-span-2 p-4 bg-white rounded-lg shadow-md lg:h-full">
+        <div className="col-span-2 p-4 bg-white rounded-lg shadow-md lg:min-h-fit">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                Fill in the form
+                Form Surat
             </h2>
+            <hr className='mt-2'/>
             <form>
                 <div className="grid gap-4 mt-6 lg:gap-6">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
@@ -48,6 +50,13 @@ export default function SubContent() {
                     </div>
                 </div>
             </form>
+            <div className="flex justify-end">
+                <Button 
+                    name="btn-save-surat"
+                    property="mt-5 px-10 "
+                    content="Save"
+                />
+            </div>
         </div>
     );
 }
