@@ -80,7 +80,7 @@ export const AuthenticationProvider = ({ children }) => {
     try {
       const response = await axios.post(BASE_URL, refreshToken, options);
       console.log(response.data);
-      Cookies.set('access_token', response.data.access_token, { expires: 1 / 1440 });
+      Cookies.set('access_token', response.data.access_token, { expires: 15 / 1440 });
       //
       return response.data;
     } catch (err) {

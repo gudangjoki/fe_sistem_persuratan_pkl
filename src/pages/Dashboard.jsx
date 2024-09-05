@@ -23,7 +23,7 @@ const Dashboard = () => {
     // baiknya buatkan komponen untuk profil 
     // agar semua pages bisa menjalankan fungsi axios reload
     useEffect(() => {
-        let isMounted = false;
+        let isMounted = true;
         const controller = new AbortController();
 
         const getSelfData = async () => {
@@ -32,7 +32,9 @@ const Dashboard = () => {
                     signal: controller.signal
                 })
                 console.log(response?.data);
-                isMounted && setUser(response?.data);
+                if (isMounted) {
+                    setUser(response?.data);
+                }
             } catch (err) {
                 console.error(err);
             }

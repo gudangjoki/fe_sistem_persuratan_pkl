@@ -13,7 +13,7 @@ export const AxiosContentProvider = ({ children }) => {
   useEffect(() => {
     const requestInterceptor = axiosReload.interceptors.request.use(
       (config) => {
-        if (config.headers["Authorization"] !== null) {
+        if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${accessToken}`;
         }
 
@@ -48,7 +48,7 @@ export const AxiosContentProvider = ({ children }) => {
 
     return () => {
       axiosReload.interceptors.request.eject(requestInterceptor);
-      axiosReload.interceptors.request.eject(responseInterceptor);
+      axiosReload.interceptors.response.eject(responseInterceptor);
     };
   }, [getNewAccessToken, accessToken]);
 
@@ -64,5 +64,5 @@ export const AxiosContentProvider = ({ children }) => {
 };
 
 AxiosContentProvider.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.string).isRequired,
+  children: PropTypes.node.isRequired,
 };
