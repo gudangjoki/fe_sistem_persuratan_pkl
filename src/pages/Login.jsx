@@ -52,7 +52,7 @@ const Login = () => {
       const response = await axios.post("http://localhost:8000/api/login", credential, options);
       const { access_token, refresh_token } = response.data;
       if (access_token) {
-        Cookies.set('access_token', access_token, { expires: 1 / 1440 });
+        Cookies.set('access_token', access_token, { expires: 15 / 1440 });
         if (Cookies.get('refresh_token') == null) {
           Cookies.set('refresh_token', refresh_token, { expires: 7 });
         }
@@ -74,7 +74,7 @@ const Login = () => {
       setCredential(null);
       setSuccess(false);
     }
-  }, [success])
+  }, [success]);
 
   return (
     <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-100">
@@ -88,8 +88,30 @@ const Login = () => {
         animate={{ opacity: 1, y: 0 }}   // Ends at normal position and fully visible
         transition={{ duration: 0.6 }}   // Animation duration
       >
+        { errMsg && <div className="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" role="alert" tabIndex="-1" aria-labelledby="hs-with-list-label">
+  <div className="flex">
+    <div className="shrink-0">
+      <svg className="shrink-0 size-4 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="m15 9-6 6"></path>
+        <path d="m9 9 6 6"></path>
+      </svg>
+    </div>
+    <div className="ms-4">
+      <h3 id="hs-with-list-label" className="text-sm font-semibold">
+        {errMsg}.
+      </h3>
+      <div className="mt-2 text-sm text-red-700 dark:text-red-400">
+        <ul className="list-disc space-y-1 ps-5">
+          <li>
+            {"Username and your password doesn't match in database"}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>}
         <div className="p-4 sm:p-7">
-          { errMsg && <>{errMsg}</>}
           <div className="text-center">
             <h1 className="block text-2xl font-bold text-gray-800">Sign in</h1>
           </div>

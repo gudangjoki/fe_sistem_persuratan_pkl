@@ -1,4 +1,4 @@
-import { useAuth } from "../hooks/useAuth";
+// import { useAuth } from "../hooks/useAuth";
 import UploadFile from './DropFile';
 import SelectItem from './SelectItem';
 import SelectMultiple from './SelectMultiple';
@@ -6,7 +6,7 @@ import SelectMultiple from './SelectMultiple';
 
 export default function SidebarHeader() {
 
-    const { getAccessTokenFromCookie, setUser } = useAuth();
+    // const { getAccessTokenFromCookie, setUser } = useAuth();
     return(
         <div className="bg-gray-50 transition-all duration-300 lg:hs-overlay-layout-open:ps-[260px]">
             <main id="content">

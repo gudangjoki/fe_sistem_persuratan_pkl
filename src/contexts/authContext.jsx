@@ -33,7 +33,9 @@ export const AuthContext = createContext({
   indexPin: 0,
   setIndexPin: () => {},
   passReset: {},
-  setPassReset: () => {}
+  setPassReset: () => {},
+  email: "",
+  setEmail: () => {}
 });
 
 export const AuthenticationProvider = ({ children }) => {
@@ -46,6 +48,7 @@ export const AuthenticationProvider = ({ children }) => {
   const [url, setUrl] = useState("http://localhost:8000/api/login");
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [indexPin, setIndexPin] = useState(0);
+  const [email, setEmail] = useState("");
 
   const saveTokenToCookie = (access_token, refresh_token) => {
     Cookies.set('access_token', access_token);
@@ -77,7 +80,7 @@ export const AuthenticationProvider = ({ children }) => {
     try {
       const response = await axios.post(BASE_URL, refreshToken, options);
       console.log(response.data);
-      Cookies.set('access_token', response.data.access_token, { expires: 1 / 1440 });
+      Cookies.set('access_token', response.data.access_token, { expires: 15 / 1440 });
       //
       return response.data;
     } catch (err) {
@@ -101,7 +104,9 @@ export const AuthenticationProvider = ({ children }) => {
     indexPin,
     setIndexPin,
     passReset,
-    setPassReset
+    setPassReset,
+    email,
+    setEmail
   };
 
   return (

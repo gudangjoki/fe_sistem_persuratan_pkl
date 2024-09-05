@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import VerifikasiOTP from "./pages/VerifikasiOTP";
 import ResetPassword from "./pages/ResetPassword";
 import RoleBasedRoutes from "./components/RoleBasedRoutes";
-import { AuthenticationProvider } from "./contexts/AuthContext";
+import { AuthenticationProvider } from "./contexts/authContext";
 
 const Root = () => {
   const location = useLocation();
@@ -34,8 +34,15 @@ const Root = () => {
           </Route>
           
           <Route path="/forgot-account" element={<ForgotAccount />} />
-          <Route path="/otp-verification" element={<VerifikasiOTP />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+
+          <Route element={<RoleBasedRoutes allowedRoles={["no_auth", "forget_acc"]} />}>
+            <Route path="/otp-verification" element={<VerifikasiOTP />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+          </Route>
+
+          {/* <Route element={<RoleBasedRoutes allowedRoles={["no_auth"]} />}>
+            
+          </Route> */}
           
           <Route path="/dashboard" element={<Dashboard />} />
           

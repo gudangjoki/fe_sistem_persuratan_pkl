@@ -2,14 +2,22 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+// import { useAuth } from "../hooks/useAuth";
+import Cookies from "js-cookie";
 
 const bg = "/bg.jpg";
 
 const ForgotAccount = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+  const [email, setEmail] = useState("");
+  // const {email, setEmail} = useAuth();
+
+  useEffect(() => {
+    console.log(email);
+  }, [email]);
 
   const changeEmail = (e) => {
     setEmail((prev) => ({
@@ -20,7 +28,7 @@ const ForgotAccount = () => {
 
   const submitFormEmail = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading spinner
+    setLoading(true);
 
     const BASE_URL = "http://localhost:8000/api/forget_password";
     const options = {
@@ -33,8 +41,11 @@ const ForgotAccount = () => {
       const response = await axios.post(BASE_URL, email, options);
       setSuccess(response.data?.success);
       console.log(response.data);
+      Cookies.set('email', email.email);
+      Cookies.set('role_pass_reset', 'forget_acc', { expires: 2 / 1440 });
     } catch (err) {
-      console.error(err);
+      console.log(err);
+      setErrMsg(err.response?.data?.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -76,6 +87,10 @@ const ForgotAccount = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {errMsg !== "" && <div className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" role="alert" tabIndex="-1" aria-labelledby="hs-soft-color-danger-label">
+          <span id="hs-soft-color-danger-label" className="font-bold">Danger</span> {errMsg}
+        </div>}
+
         <div className="p-4 sm:p-7">
           <div className="text-center">
             <h1 className="block text-2xl font-bold text-gray-800">
