@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import Sidebar from '../components/SidebarHeader';
+import Sidebar from '../components/Sidebar';
+import Header from '../components/Header';
+import Content from '../components/Content';
 // import { axiosReload } from '../utils/axios/axiosReload';
 import { useAuth } from '../hooks/useAuth';
 import { useAxiosReload } from '../hooks/useAxiosReload';
@@ -47,7 +49,13 @@ const Dashboard = () => {
 
     return (
         <AxiosContentProvider>
-            <Sidebar />
+            <div className="bg-gray-50 transition-all duration-300 lg:hs-overlay-layout-open:ps-[260px]">
+                <main id="content">
+                    <Header />
+                    <Sidebar />
+                    <Content />
+                </main>
+            </div>
         </AxiosContentProvider>
     );
 };
