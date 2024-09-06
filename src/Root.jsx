@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import VerifikasiOTP from "./pages/VerifikasiOTP";
 import ResetPassword from "./pages/ResetPassword";
 import RoleBasedRoutes from "./components/RoleBasedRoutes";
+import Board from "./pages/Board";
 import { AuthenticationProvider } from "./contexts/authContext";
 
 const Root = () => {
@@ -45,6 +46,7 @@ const Root = () => {
           </Route> */}
           
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/board" element={<Board />} />
           
         </Routes>
       </AuthenticationProvider>

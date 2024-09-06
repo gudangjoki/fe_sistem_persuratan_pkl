@@ -4,7 +4,7 @@ import { useLetter } from "../hooks/useLetter";
 
 /* eslint-disable react/prop-types */
 export default function SelectItem(props) {
-  const { name, token } = props;
+  const { name, token, disabledSelect } = props;
 
   const [success, setSuccess] = useState(false);
   const [types, setTypes] = useState([]);
@@ -66,8 +66,9 @@ export default function SelectItem(props) {
                 }'
         id={name}
         name="letter_id_type"
+        disabled={disabledSelect}
         onChange={changeSelectType}
-        className="mt-1 block w-full py-3 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        className="block w-full px-3 py-3 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         style={{ appearance: "none", background: "none", paddingRight: "30px" }}
       >
         <option value="">Pilih Tipe Surat</option>
