@@ -62,7 +62,20 @@ function ActionDropdown(props) {
 
     try {
       const response = await axios.get(BASE_URL, options);
-      console.log(response.data);
+      console.log(response.data.data.created_at);
+
+      const letterDateString = response.data.data.created_at
+
+      const date = new Date(letterDateString);
+
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      const formattedDate = `${day}/${month}/${year}`;
+
+      response.data.data.created_at = formattedDate;
+
       setDetailLetter(response.data.data);
       // setFetched(true);
       Cookies.remove('letterId');
@@ -70,6 +83,10 @@ function ActionDropdown(props) {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    console.log(detailLetter);
+  }, [detailLetter]);
 
 
   // useEffect(() => {
@@ -189,7 +206,7 @@ function ActionDropdown(props) {
                       Tanggal Simpan
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       disabled
                       value={detailLetter.created_at}
                       name="hs-tanggal-surat"
@@ -247,7 +264,7 @@ function ActionDropdown(props) {
                   >
                     File Surat
                   </label>
-                  <UploadFileReader />
+                  <UploadFileReader letterPath={detailLetter.letter_path} />
                 </div>
               </div>
             </form>
@@ -748,16 +765,21 @@ export default function SubContent({ activeMenu }) {
                               <tr key={val.letter_id} className="odd:bg-white even:bg-gray-100 hover:bg-gray-100 dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-700">
                                   <td className="px-6 py-4 text-sm font-medium text-gray-800 break-words whitespace-normal">{val.letter_no}</td>
                                   <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">{val.letter_title}</td>
-                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 whitespace-nowrap">{val.author_name}</td>
+                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 whitespace-nowrap">{val.letter_created_at}</td>
                                   <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">{val.letter_type}</td>
                                   <td className="max-w-xs px-6 py-4 space-x-2 space-y-2 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">
-                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-800 text-white dark:bg-white dark:text-neutral-800">Badge</span>
+                                    {val.letter_keywords.length != 0 && val.letter_keywords.map((word, idx) => {
+                                      return (
+                                      <span key={idx} className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-600 text-white dark:bg-blue-500">{word}</span>
+                                      )
+                                    })}
+                                    {/* <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-800 text-white dark:bg-white dark:text-neutral-800">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-500 text-white">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-500 text-white">Badge</span>
-                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-600 text-white dark:bg-blue-500">Badge</span>
+
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500 text-white">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-yellow-500 text-white">Badge</span>
-                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-600">Badge</span>
+                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-600">Badge</span> */}
                                   </td>
                                   <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
                                       <ActionDropdown letterId={val.letter_id} />
