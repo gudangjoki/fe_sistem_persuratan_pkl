@@ -88,7 +88,7 @@ const Login = () => {
         animate={{ opacity: 1, y: 0 }}   // Ends at normal position and fully visible
         transition={{ duration: 0.6 }}   // Animation duration
       >
-        { errMsg && <div className="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" role="alert" tabIndex="-1" aria-labelledby="hs-with-list-label">
+        { errMsg && <div className="p-4 text-sm text-red-800 border border-red-200 rounded-lg bg-red-50 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" role="alert" tabIndex="-1" aria-labelledby="hs-with-list-label">
   <div className="flex">
     <div className="shrink-0">
       <svg className="shrink-0 size-4 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -102,7 +102,7 @@ const Login = () => {
         {errMsg}.
       </h3>
       <div className="mt-2 text-sm text-red-700 dark:text-red-400">
-        <ul className="list-disc space-y-1 ps-5">
+        <ul className="space-y-1 list-disc ps-5">
           <li>
             {"Username and your password doesn't match in database"}
           </li>
@@ -141,7 +141,7 @@ const Login = () => {
                   <div className="flex items-center justify-between">
                     <label htmlFor="password" className="block mb-2 text-sm">Password</label>
                     <a
-                      className="cursor-pointer inline-flex items-center text-sm font-medium text-blue-600 gap-x-1 decoration-2 hover:underline focus:outline-none focus:underline"
+                      className="inline-flex items-center text-sm font-medium text-blue-600 cursor-pointer gap-x-1 decoration-2 hover:underline focus:outline-none focus:underline"
                       // href="/forgot-account"
                       onClick={() => {
                         navigate('../forgot-account');

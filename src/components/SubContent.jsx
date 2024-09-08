@@ -8,6 +8,7 @@ import SelectMultiple from "./SelectMultiple";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import Button from "./SingleButton";
+import OverlayItem from "./OverlayItem";
 // import DropdownItem from "./DropdownItem";
 import { Dialog } from "@headlessui/react";
 
@@ -531,6 +532,7 @@ export default function SubContent({ activeMenu }) {
               <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
                   Formulir Surat
               </h2>
+             
               <form>
                   <div className="grid gap-4 mt-6 lg:gap-6">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
@@ -686,35 +688,35 @@ export default function SubContent({ activeMenu }) {
               <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
                   Manajemen Role
               </h2>
-              <div class="flex flex-col">
-                <div class="-m-1.5 overflow-x-auto">
-                  <div class="p-1.5 min-w-full inline-block align-middle">
-                    <div class="overflow-hidden">
-                      <table class="min-w-full divide-y divide-gray-200">
+              <div className="flex flex-col">
+                <div className="-m-1.5 overflow-x-auto">
+                  <div className="p-1.5 min-w-full inline-block align-middle">
+                    <div className="overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-200">
                         <thead>
                           <tr>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Role</th>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Access</th>
+                            <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Role</th>
+                            <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Access</th>
                           </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody className="divide-y divide-gray-200">
                           <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Admin</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                                <div class="flex gap-x-6">
-                                  <div class="flex">
-                                    <input type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-1" />
-                                    <label for="hs-checkbox-group-1" class="text-sm text-gray-500 ms-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</label>
+                            <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">Admin</td>
+                            <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
+                                <div className="flex gap-x-6">
+                                  <div className="flex">
+                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-1" />
+                                    <label htmlFor="hs-checkbox-group-1" className="text-sm text-gray-500 ms-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</label>
                                   </div>
 
-                                  <div class="flex">
-                                    <input type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-2" />
-                                    <label for="hs-checkbox-group-2" class="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet.</label>
+                                  <div className="flex">
+                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-2" />
+                                    <label htmlFor="hs-checkbox-group-2" className="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet.</label>
                                   </div>
 
-                                  <div class="flex">
-                                    <input type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-3" />
-                                    <label for="hs-checkbox-group-3" class="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet consectetur.</label>
+                                  <div className="flex">
+                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-3" />
+                                    <label htmlFor="hs-checkbox-group-3" className="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet consectetur.</label>
                                   </div>
                                 </div>
                             </td>

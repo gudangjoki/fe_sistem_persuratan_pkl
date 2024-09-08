@@ -7,7 +7,6 @@ export default function Sidebar() {
             hidden
             fixed inset-y-0 start-0 z-[60]
             bg-white border-e border-gray-200
-
         " role="dialog" tabIndex="-1" aria-label="Sidebar">
             <div className="relative flex flex-col h-full max-h-full">
                 <div className="px-6 pt-4">
