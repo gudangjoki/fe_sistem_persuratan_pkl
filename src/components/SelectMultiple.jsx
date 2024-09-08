@@ -13,33 +13,36 @@ export default function SelectMultiple(props) {
 
   const { letterData, setLetterData } = useLetter();
 
-  useEffect(() => {
-    // const BASE_URL = 'http://localhost:8000/api/keywords?index=0&search=ma';
-    const BASE_URL = 'http://localhost:8000/api/keywords';
-    const options = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    };
+      // const BASE_URL = 'http://localhost:8000/api/keywords?index=0&search=ma';
+      const BASE_URL = 'http://localhost:8000/api/keywords';
+      const options = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+  
+      const getAllType = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get(BASE_URL, options);
+          const { index, keywords } = response.data;
+          setSuccess(true);
+          setTypes(keywords.map(keyword => ({ value: keyword.id, label: keyword.keyword_name })));
+        } catch (err) {
+          setSuccess(false);
+          console.log(err);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    const getAllType = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(BASE_URL, options);
-        const { index, keywords } = response.data;
-        setSuccess(true);
-        setTypes(keywords.map(keyword => ({ value: keyword.id, label: keyword.keyword_name })));
-      } catch (err) {
-        setSuccess(false);
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
+
+    if (sessionStorage.getItem('activeMenu') !== 'buat_surat') return;
 
     getAllType();
-  }, [token]);
+  }, []);
 
   const handleKeywords = (selectedKeywords) => {
     const newKeywordTemp = [];

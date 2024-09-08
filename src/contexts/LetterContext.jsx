@@ -6,6 +6,8 @@ export const LetterContext = createContext({
   setKeywords: () => {},
   letterData: null,
   setLetterData: () => {},
+  viewLetter: null,
+  setViewLetter: () => {},
 });
 
 export const LetterManagementProvider = ({ children }) => {
@@ -17,13 +19,16 @@ export const LetterManagementProvider = ({ children }) => {
     "letter_path": "",
     "letter_no": ""
   });
+  const [viewLetter, setViewLetter] = useState([]);
 
 
   const letterContextValue = {
     keywords,
     setKeywords,
     letterData,
-    setLetterData
+    setLetterData,
+    viewLetter,
+    setViewLetter
   };
 
   return (

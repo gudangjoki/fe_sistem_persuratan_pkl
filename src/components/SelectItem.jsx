@@ -9,34 +9,37 @@ export default function SelectItem(props) {
   const [success, setSuccess] = useState(false);
   const [types, setTypes] = useState([]);
   const { letterData, setLetterData } = useLetter();
-  const [loading, setLoading] = useState(true); // For loading status
+  const [loading, setLoading] = useState(true);
+
+  const BASE_URL = "http://localhost:8000/api/letter_types";
+  const options = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const getAllType = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(BASE_URL, options);
+      const { success, types } = response.data;
+      setSuccess(success);
+      setTypes(types);
+      // localStorage.setItem('types');
+    } catch (err) {
+      setSuccess(false);
+      console.log(err);
+    } finally {
+      setLoading(false); // Fetch selesai, set loading false
+    }
+  };
+
 
   useEffect(() => {
-    const BASE_URL = "http://localhost:8000/api/letter_types";
-    const options = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    const getAllType = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(BASE_URL, options);
-        const { success, types } = response.data;
-        setSuccess(success);
-        setTypes(types);
-      } catch (err) {
-        setSuccess(false);
-        console.log(err);
-      } finally {
-        setLoading(false); // Fetch selesai, set loading false
-      }
-    };
-
+    if (sessionStorage.getItem('activeMenu') !== 'buat_surat') return;
     getAllType();
-  }, [token]);
+  }, []);
 
   const changeSelectType = (e) => {
     setLetterData((prev) => ({
@@ -45,9 +48,9 @@ export default function SelectItem(props) {
     }))
   }
 
-  useEffect(() => {
-    console.log(letterData);
-  }, [letterData]);
+  // useEffect(() => {
+  //   console.log(letterData);
+  // }, [letterData]);
 
   if (loading) {
     return <div>Loading...</div>;

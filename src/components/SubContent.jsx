@@ -6,26 +6,98 @@ import UploadFileReader from "./DropFileReader";
 import SelectItem from "./SelectItem";
 import SelectMultiple from "./SelectMultiple";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import Button from "./SingleButton";
 import OverlayItem from "./OverlayItem";
 // import DropdownItem from "./DropdownItem";
 import { Dialog } from "@headlessui/react";
 
 import { Menu } from '@headlessui/react';
+// const lazyListLetter = lazy(() => import('./ListLetter'));
 
-function ActionDropdown() {
+/* eslint-disable react/prop-types */
+function ActionDropdown(props) {
+  const { letterId } = props;
+  const [detailLetter, setDetailLetter] = useState({});
+  const token = Cookies.get('access_token'); 
+
   const [isDetailOpen, setIsDetailOpen] = useState(false);
  
   const [isEditOpen, setIsEditOpen] = useState(false);
   const openEditModal = () => setIsEditOpen(true);
   const closeEditModal = () => setIsEditOpen(false);
-  const openDetailModal = () => setIsDetailOpen(true);
+  const [fetched, setFetched] = useState(false);
+  const openDetailModal = (letterIdPassed) => {
+    console.log(letterIdPassed)
+    Cookies.set('letterId', letterIdPassed);
+    setIsDetailOpen(true);
+    // if (!fetched) {
+      // getDetailLetter(letterIdPassed);
+    //   // setFetched(false)
+    // }
+  }
   const closeDetailModal = () => setIsDetailOpen(false);
+
+//   useEffect(() => {
+//   if (isDetailOpen && letterId && !fetched) {
+//     getDetailLetter(letterId);
+//   }
+// }, [isDetailOpen, letterId, fetched]);
+
+  useEffect(() => {
+    const letterIdPassed = Cookies.get('letterId');
+    if (isDetailOpen) {
+      getDetailLetter(letterIdPassed);
+    }
+  }, [isDetailOpen])
+
+  const getDetailLetter = async (letterId) => {
+    // if (!letterId) return;
+    const BASE_URL = `http://localhost:8000/api/letter/${letterId}`;
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+
+    try {
+      const response = await axios.get(BASE_URL, options);
+      console.log(response.data.data.created_at);
+
+      const letterDateString = response.data.data.created_at
+
+      const date = new Date(letterDateString);
+
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      const formattedDate = `${day}/${month}/${year}`;
+
+      response.data.data.created_at = formattedDate;
+
+      setDetailLetter(response.data.data);
+      // setFetched(true);
+      Cookies.remove('letterId');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    console.log(detailLetter);
+  }, [detailLetter]);
+
+
+  // useEffect(() => {
+  //   const letterId = Cookies.get('letter_id');
+
+  // }, []);
 
   return (
     <>
-      <Menu as="div" className="relative inline-block text-left">
+      <Menu key={letterId} as="div" className="relative inline-block text-left">
         {/* Button */}
         <Menu.Button className="inline-flex justify-center px-4 py-2 text-sm font-medium rounded-md shadow-sm hover:bg-gray-50">
           <svg
@@ -54,7 +126,7 @@ function ActionDropdown() {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={openDetailModal}
+                  onClick={() => openDetailModal(letterId)}
                   className={`${
                     active ? "bg-gray-100 text-gray-900" : "text-gray-700"
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
@@ -106,6 +178,7 @@ function ActionDropdown() {
           <Dialog.Title className="text-lg font-bold">Detail Surat</Dialog.Title>
           <Dialog.Description className="mt-2">
             <form>
+              
               <div className="grid gap-4 mt-6 lg:gap-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
                   <div>
@@ -118,6 +191,7 @@ function ActionDropdown() {
                     <input
                       type="text"
                       onChange=""
+                      value={detailLetter.letter_no}
                       disabled
                       name="letter_no"
                       id="hs-id-surat"
@@ -133,8 +207,9 @@ function ActionDropdown() {
                       Tanggal Simpan
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       disabled
+                      value={detailLetter.created_at}
                       name="hs-tanggal-surat"
                       id="hs-tanggal-surat"
                       className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -153,6 +228,7 @@ function ActionDropdown() {
                     type="text"
                     onChange=""
                     disabled
+                    value={detailLetter.letter_title}
                     name="letter_title"
                     id="hs-judul-surat"
                     autoComplete="email"
@@ -189,7 +265,7 @@ function ActionDropdown() {
                   >
                     File Surat
                   </label>
-                  <UploadFileReader />
+                  <UploadFileReader letterPath={detailLetter.letter_path} />
                 </div>
               </div>
             </form>
@@ -394,7 +470,37 @@ export default function SubContent({ activeMenu }) {
   const [errData, setErrData] = useState([]);
   const [isMsgErr, setIsMsgErr] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
+  // const [viewLetter, setViewLetter] = useState([]);
+
   const token = Cookies.get("access_token");
+
+  const getAllLetters = async () => {
+    const BASE_URL = "http://localhost:8000/api/letters?type=&index=0";
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      
+    }
+    
+    try {
+      const response = await axios.get(BASE_URL, options);
+      const letter = response.data;
+      console.log(letter.data);
+      setLetterData(letter.data);
+      setLoading(true)
+    } catch(err) {
+      console.log(err);
+    }
+
+  }
+
+  useEffect(() => {
+    getAllLetters();
+  }, []);
 
   const createLetterInput = (e) => {
     const { name, value } = e.target;
@@ -656,24 +762,34 @@ export default function SubContent({ activeMenu }) {
                               </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-200">
-                              <tr className="odd:bg-white even:bg-gray-100 hover:bg-gray-100 dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-700">
-                                  <td className="px-6 py-4 text-sm font-medium text-gray-800 break-words whitespace-normal">John Brown</td>
-                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">Regional Paradigm Technician</td>
-                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 whitespace-nowrap">john@site.com</td>
-                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">45</td>
+                            {loading && letterData.map((val) => {
+                              return (
+                              <tr key={val.letter_id} className="odd:bg-white even:bg-gray-100 hover:bg-gray-100 dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-700">
+                                  <td className="px-6 py-4 text-sm font-medium text-gray-800 break-words whitespace-normal">{val.letter_no}</td>
+                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">{val.letter_title}</td>
+                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 whitespace-nowrap">{val.letter_created_at}</td>
+                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">{val.letter_type}</td>
                                   <td className="max-w-xs px-6 py-4 space-x-2 space-y-2 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">
-                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-800 text-white dark:bg-white dark:text-neutral-800">Badge</span>
+                                    {val.letter_keywords.length != 0 && val.letter_keywords.map((word, idx) => {
+                                      return (
+                                      <span key={idx} className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-600 text-white dark:bg-blue-500">{word}</span>
+                                      )
+                                    })}
+                                    {/* <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-800 text-white dark:bg-white dark:text-neutral-800">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-500 text-white">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-500 text-white">Badge</span>
-                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-600 text-white dark:bg-blue-500">Badge</span>
+
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500 text-white">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-yellow-500 text-white">Badge</span>
-                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-600">Badge</span>
+                                    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-600">Badge</span> */}
                                   </td>
                                   <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
-                                      <ActionDropdown />
+                                      <ActionDropdown letterId={val.letter_id} />
                                   </td>
                               </tr>
+                              )
+                            })}
+
                           </tbody>
                           </table>
                       </div>
