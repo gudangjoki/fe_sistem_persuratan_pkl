@@ -8,6 +8,8 @@ import Cookies from 'js-cookie';
 export default function SelectMultiple(props) {
   const { name, tokenProps, disabledSelect, defaultData } = props;
 
+  const { loadingFetch, setLoadingFetch } = useLetter();
+
   const [success, setSuccess] = useState(false);
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,7 @@ export default function SelectMultiple(props) {
 
   const getKeywordEdit = async (letterId) => {
     setLoadNew(true);
+    setLoadingFetch(true);
 
     const SECONDARY_URL = `http://localhost:8000/api/letter/${letterId}`;
     try {
@@ -71,6 +74,7 @@ export default function SelectMultiple(props) {
       console.log(err);
     } finally {
       setLoadNew(false);
+      setLoadingFetch(false);
     }
   };
 

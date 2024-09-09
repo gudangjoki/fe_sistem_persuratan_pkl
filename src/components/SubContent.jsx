@@ -21,11 +21,13 @@ function ActionDropdown(props) {
   const { letterId } = props;
   const [detailLetter, setDetailLetter] = useState({});
   const [keywordLetter, setKeywordLetter] = useState([]);
-  const token = Cookies.get('access_token'); 
+  const [token] = useState(Cookies.get('access_token')); 
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
  
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const { loadingFetch, setLoadingFetch } = useLetter();
 
   // const [fetched, setFetched] = useState(false);
   const openDetailModal = (letterIdPassed) => {
@@ -395,6 +397,7 @@ function ActionDropdown(props) {
                     onChange={editChangeLetter}
                     value={detailLetter.letter_title}
                     name="letter_title"
+                    disabled={loadingFetch}
                     id="edit-judul-surat"
                     autoComplete="email"
                     className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -541,8 +544,10 @@ export default function SubContent({ activeMenu }) {
   //   setToken();
   // }, [token]);
 
+  // const [search, setSearch] = useState("");
+
   const getAllLetters = async () => {
-    const BASE_URL = "http://localhost:8000/api/letters?type=&index=0";
+    const BASE_URL = `http://localhost:8000/api/letters?type=&index=${page}&keyword=${debouncedSearch}`;
     const options = {
       headers: {
         'Content-Type': 'application/json',
@@ -563,9 +568,27 @@ export default function SubContent({ activeMenu }) {
 
   }
 
+  const [page, setPage] = useState(0);
+
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
   useEffect(() => {
-    getAllLetters();
-  }, []);
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 250);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
+
+  useEffect(() => {
+    if (debouncedSearch !== null && debouncedSearch !== undefined) {
+      getAllLetters();
+    }
+  }, [debouncedSearch, page]);
+
 
   const createLetterInput = (e) => {
     const { name, value } = e.target;
@@ -818,7 +841,7 @@ export default function SubContent({ activeMenu }) {
                           <div className="col-span-1" style={{ width: '30%' }}>
                             <label htmlFor="hs-as-table-product-review-search" className="sr-only">Search</label>
                             <div className="relative">
-                              <input type="text" id="hs-as-table-product-review-search" name="hs-as-table-product-review-search" className="block w-full px-3 py-2 text-sm border border-gray-200 rounded-lg ps-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="Search" />
+                              <input type="text" id="hs-as-table-product-review-search" name="hs-as-table-product-review-search" value={search} onChange={(e) => setSearch(e.target.value)} className="block w-full px-3 py-2 text-sm border border-gray-200 rounded-lg ps-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="Search" />
                               <div className="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-4">
                                 <svg className="text-gray-400 shrink-0 size-4 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                               </div>
@@ -889,7 +912,8 @@ export default function SubContent({ activeMenu }) {
                             </button>
                           </div> */}
                           <nav className="flex items-center gap-x-1" aria-label="Pagination">
-                            <button type="button" className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Previous" disabled="true">
+                            {/* <button type="button" onClick={(e) => setPage(page - 1)} className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Previous" disabled="true"> */}
+                            <button type="button" onClick={(e) => setPage(page - 1)} className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Previous">
                               <svg className="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="m15 18-6-6 6-6"></path>
                               </svg>
@@ -900,7 +924,7 @@ export default function SubContent({ activeMenu }) {
                               <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">2</button>
                               <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">3</button>
                             </div>
-                            <button type="button" className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Next">
+                            <button type="button" onClick={(e) => setPage(page + 1)} className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Next">
                               <span>Next</span>
                               <svg className="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="m9 18 6-6-6-6"></path>

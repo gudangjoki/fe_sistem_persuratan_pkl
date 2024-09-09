@@ -8,6 +8,8 @@ export const LetterContext = createContext({
   setLetterData: () => {},
   viewLetter: null,
   setViewLetter: () => {},
+  loadingFetch: null,
+  setLoadingFetch: () => {},
 });
 
 export const LetterManagementProvider = ({ children }) => {
@@ -23,6 +25,7 @@ export const LetterManagementProvider = ({ children }) => {
     "letter_no": ""
   });
   const [viewLetter, setViewLetter] = useState([]);
+  const [loadingFetch, setLoadingFetch] = useState(null);
 
 
   const letterContextValue = {
@@ -31,7 +34,9 @@ export const LetterManagementProvider = ({ children }) => {
     letterData,
     setLetterData,
     viewLetter,
-    setViewLetter
+    setViewLetter,
+    loadingFetch,
+    setLoadingFetch
   };
 
   return (

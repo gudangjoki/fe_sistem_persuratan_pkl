@@ -7,6 +7,8 @@ import Cookies from 'js-cookie';
 export default function SelectItem(props) {
   const { name, tokenProps, disabledSelect, waiting, letterType } = props;
 
+  const { loadingFetch, setLoadingFetch } = useLetter();
+
   const [success, setSuccess] = useState(false);
   const [types, setTypes] = useState([]);
   const { letterData, setLetterData } = useLetter();
@@ -44,6 +46,7 @@ export default function SelectItem(props) {
 
   const getLetterEdit = async (letterId) => {
     setLoadNew(true);
+    setLoadingFetch(true);
 
     const SECONDARY_URL = `http://localhost:8000/api/letter/${letterId}`;
     try {
@@ -59,6 +62,7 @@ export default function SelectItem(props) {
       console.log(err);
     } finally {
       setLoadNew(false);
+      setLoadingFetch(false);
     }
   };
 
@@ -133,7 +137,7 @@ export default function SelectItem(props) {
         className={`block w-full px-3 py-3 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         style={{ appearance: "none", background: "none", paddingRight: "30px" }}
       >
-        {loadNew ? (<option value="">Pilih Tipe Surat</option>):(<option value="">{letterTypeAh}</option>)}
+        {!loadNew ? (<option value="">Pilih Tipe Surat</option>):(<option value="">{letterTypeAh}</option>)}
         {success &&
           types.map((val) => (
             <option key={val.id} value={val.id}>
