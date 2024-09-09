@@ -5,6 +5,7 @@ import SubContent from "./SubContent";
 import SubMenu from "./SubMenu";
 import Board from "../pages/Board";
 
+
 export default function Content() {
     window.addEventListener('beforeunload', () => {
         sessionStorage.removeItem('detail');
@@ -27,6 +28,7 @@ export default function Content() {
                         <div className="h-full lg:col-span-2">
                             <SubContent activeMenu={activeMenu} />
                         </div>
+                        
                     </LetterManagementProvider>
                     {/* Main Content Area */}
                 </div>

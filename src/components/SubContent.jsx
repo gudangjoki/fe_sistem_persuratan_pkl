@@ -8,6 +8,7 @@ import SelectMultiple from "./SelectMultiple";
 import Cookies from "js-cookie";
 import { lazy, useEffect, useState } from "react";
 import Button from "./SingleButton";
+import OverlayItem from "./OverlayItem";
 // import DropdownItem from "./DropdownItem";
 import { Dialog } from "@headlessui/react";
 
@@ -516,7 +517,7 @@ function DeleteIcon(props) {
   );
 }
 
-// eslint-disable-next-line react/prop-types
+ 
 export default function SubContent({ activeMenu }) {
   
   // const {  } = useAuth();
@@ -702,6 +703,7 @@ export default function SubContent({ activeMenu }) {
               <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
                   Formulir Surat
               </h2>
+             
               <form>
                   <div className="grid gap-4 mt-6 lg:gap-6">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
@@ -812,6 +814,17 @@ export default function SubContent({ activeMenu }) {
               <div className="flex flex-col">
                   <div className="-m-1.5 overflow-x-auto">
                       <div className="p-1.5 min-w-full inline-block align-middle">
+                        <div className="grid grid-cols-2 gap-2 py-4 border-b border-gray-200 md:flex md:justify-between md:items-center dark:border-neutral-700">
+                          <div className="col-span-1" style={{ width: '30%' }}>
+                            <label htmlFor="hs-as-table-product-review-search" className="sr-only">Search</label>
+                            <div className="relative">
+                              <input type="text" id="hs-as-table-product-review-search" name="hs-as-table-product-review-search" className="block w-full px-3 py-2 text-sm border border-gray-200 rounded-lg ps-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="Search" />
+                              <div className="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-4">
+                                <svg className="text-gray-400 shrink-0 size-4 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       <div className="overflow-hidden">
                           <table className="min-w-full divide-y divide-gray-200">
                           <thead>
@@ -856,6 +869,46 @@ export default function SubContent({ activeMenu }) {
                           </tbody>
                           </table>
                       </div>
+                      <div className="grid gap-3 px-6 py-4 border-t border-gray-200 md:flex md:justify-between md:items-center dark:border-neutral-700">
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-neutral-400">
+                            <span className="font-semibold text-gray-800 dark:text-neutral-200">12</span> results
+                          </p>
+                        </div>
+
+                        <div>
+                          {/* <div className="inline-flex gap-x-2">
+                            <button type="button" className="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+                              <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                              Prev
+                            </button>
+
+                            <button type="button" className="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+                              Next
+                              <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                            </button>
+                          </div> */}
+                          <nav className="flex items-center gap-x-1" aria-label="Pagination">
+                            <button type="button" className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Previous" disabled="true">
+                              <svg className="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m15 18-6-6 6-6"></path>
+                              </svg>
+                              <span>Previous</span>
+                            </button>
+                            <div className="flex items-center gap-x-1">
+                              <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center bg-gray-200 text-gray-800 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-300 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-600 dark:text-white dark:focus:bg-neutral-500" aria-current="page">1</button>
+                              <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">2</button>
+                              <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">3</button>
+                            </div>
+                            <button type="button" className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Next">
+                              <span>Next</span>
+                              <svg className="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m9 18 6-6-6-6"></path>
+                              </svg>
+                            </button>
+                          </nav>
+                        </div>
+                      </div>
                     </div>
                   </div>
               </div>
@@ -867,35 +920,35 @@ export default function SubContent({ activeMenu }) {
               <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
                   Manajemen Role
               </h2>
-              <div class="flex flex-col">
-                <div class="-m-1.5 overflow-x-auto">
-                  <div class="p-1.5 min-w-full inline-block align-middle">
-                    <div class="overflow-hidden">
-                      <table class="min-w-full divide-y divide-gray-200">
+              <div className="flex flex-col">
+                <div className="-m-1.5 overflow-x-auto">
+                  <div className="p-1.5 min-w-full inline-block align-middle">
+                    <div className="overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-200">
                         <thead>
                           <tr>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Role</th>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Access</th>
+                            <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Role</th>
+                            <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Access</th>
                           </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody className="divide-y divide-gray-200">
                           <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Admin</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                                <div class="flex gap-x-6">
-                                  <div class="flex">
-                                    <input type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-1" />
-                                    <label for="hs-checkbox-group-1" class="text-sm text-gray-500 ms-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</label>
+                            <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">Admin</td>
+                            <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
+                                <div className="flex gap-x-6">
+                                  <div className="flex">
+                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-1" />
+                                    <label htmlFor="hs-checkbox-group-1" className="text-sm text-gray-500 ms-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</label>
                                   </div>
 
-                                  <div class="flex">
-                                    <input type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-2" />
-                                    <label for="hs-checkbox-group-2" class="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet.</label>
+                                  <div className="flex">
+                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-2" />
+                                    <label htmlFor="hs-checkbox-group-2" className="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet.</label>
                                   </div>
 
-                                  <div class="flex">
-                                    <input type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-3" />
-                                    <label for="hs-checkbox-group-3" class="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet consectetur.</label>
+                                  <div className="flex">
+                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-3" />
+                                    <label htmlFor="hs-checkbox-group-3" className="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet consectetur.</label>
                                   </div>
                                 </div>
                             </td>

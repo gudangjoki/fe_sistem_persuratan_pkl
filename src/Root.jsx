@@ -9,6 +9,7 @@ import VerifikasiOTP from "./pages/VerifikasiOTP";
 import ResetPassword from "./pages/ResetPassword";
 import RoleBasedRoutes from "./components/RoleBasedRoutes";
 import Board from "./pages/Board";
+import Profile from "./pages/Profile";
 import { AuthenticationProvider } from "./contexts/authContext";
 
 const Root = () => {
@@ -47,6 +48,7 @@ const Root = () => {
           
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/board" element={<Board />} />
+          <Route path="/profile" element={<Profile />} />
           
         </Routes>
       </AuthenticationProvider>

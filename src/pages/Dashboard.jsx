@@ -6,6 +6,7 @@ import Content from '../components/Content';
 import { useAuth } from '../hooks/useAuth';
 import { useAxiosReload } from '../hooks/useAxiosReload';
 import { AxiosContentProvider } from '../contexts/AxiosReloadContext';
+import OverlayItem from "../components/OverlayItem";
 // import { useEffect } from 'react';
 // import useLogin from '../hooks/useLogin';
 
@@ -56,6 +57,11 @@ const Dashboard = () => {
                     <Header />
                     <Sidebar />
                     <Content />
+                    <OverlayItem 
+                        contentId="notification-overlay" 
+                        title="Notification" 
+                        content="This is a notification overlay content." 
+                    />
                 </main>
             </div>
         </AxiosContentProvider>
