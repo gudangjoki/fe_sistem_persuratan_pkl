@@ -1,21 +1,25 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLetter } from "../hooks/useLetter";
+import Cookies from 'js-cookie';
 
 /* eslint-disable react/prop-types */
 export default function SelectItem(props) {
-  const { name, token, disabledSelect } = props;
+  const { name, tokenProps, disabledSelect, waiting, letterType } = props;
 
   const [success, setSuccess] = useState(false);
   const [types, setTypes] = useState([]);
   const { letterData, setLetterData } = useLetter();
   const [loading, setLoading] = useState(true);
 
+  const [token, setToken] = useState(Cookies.get('access_token'));
+  // const [selectedType, setSelectedType] = useState(letterType); // state for selected letterType
+
   const BASE_URL = "http://localhost:8000/api/letter_types";
   const options = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Authorization": `Bearer ${token}`,
     },
   };
 
@@ -24,36 +28,90 @@ export default function SelectItem(props) {
     try {
       const response = await axios.get(BASE_URL, options);
       const { success, types } = response.data;
-      setSuccess(success);
+      setSuccess(true);
       setTypes(types);
-      // localStorage.setItem('types');
     } catch (err) {
       setSuccess(false);
       console.log(err);
     } finally {
-      setLoading(false); // Fetch selesai, set loading false
+      setLoading(false);
     }
   };
 
+  const [letterFull, setLetterFull] = useState(null);
+  const [letterTypeAh, setLetterTypeAh] = useState(null);
+  const [loadNew, setLoadNew] = useState(null);
+
+  const getLetterEdit = async (letterId) => {
+    setLoadNew(true);
+
+    const SECONDARY_URL = `http://localhost:8000/api/letter/${letterId}`;
+    try {
+      const response = await axios.get(SECONDARY_URL, options);
+      const { data, keywords_data } = response.data;
+      console.log(response.data);
+      // setSuccess(true);
+      // setTypes(types);
+      setLetterFull(keywords_data);
+      setLetterTypeAh(data.letter_id_type);
+    } catch (err) {
+      // setSuccess(false);
+      console.log(err);
+    } finally {
+      setLoadNew(false);
+    }
+  };
 
   useEffect(() => {
-    if (sessionStorage.getItem('activeMenu') !== 'buat_surat') return;
+    if (
+      sessionStorage.getItem("activeMenu") !== "buat_surat" &&
+      !sessionStorage.getItem("detail")
+    )
+      if (!sessionStorage.getItem("edit")) {
+        return;
+      } 
+      else {
+        const letterId = Cookies.get('letterId');
+        getLetterEdit(letterId);
+      }
+
     getAllType();
   }, []);
 
   const changeSelectType = (e) => {
+    const value = e.target.value;
+    // setSelectedType(value); // Update selected type when user changes
+    if (sessionStorage.getItem('edit')) {
+      setLetterFull((prev) => ({
+        ...prev,
+        [e.target.name]: value,
+      }));
+      return;
+    }
     setLetterData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
+      [e.target.name]: value,
+    }));
+  };
 
   // useEffect(() => {
-  //   console.log(letterData);
+  //   console.log('ayam ' + letterData);
   // }, [letterData]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  useEffect(() => {
+    console.log(letterTypeAh);
+  }, [letterTypeAh]);
+
+  if (loading && !sessionStorage.getItem("detail")) {
+    return (
+      <div className="flex animate-pulse">
+        <div className="w-full">
+          <ul className="mt-3 space-y-3 mr-5">
+            <li className="w-full h-4 bg-gray-200 rounded-full dark:bg-neutral-700"></li>
+          </ul>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -71,10 +129,11 @@ export default function SelectItem(props) {
         name="letter_id_type"
         disabled={disabledSelect}
         onChange={changeSelectType}
-        className="block w-full px-3 py-3 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        // value={selectedType} // Use the selected type state
+        className={`block w-full px-3 py-3 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         style={{ appearance: "none", background: "none", paddingRight: "30px" }}
       >
-        <option value="">Pilih Tipe Surat</option>
+        {loadNew ? (<option value="">Pilih Tipe Surat</option>):(<option value="">{letterTypeAh}</option>)}
         {success &&
           types.map((val) => (
             <option key={val.id} value={val.id}>

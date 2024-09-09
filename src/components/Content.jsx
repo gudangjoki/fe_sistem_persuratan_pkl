@@ -6,6 +6,11 @@ import SubMenu from "./SubMenu";
 import Board from "../pages/Board";
 
 export default function Content() {
+    window.addEventListener('beforeunload', () => {
+        sessionStorage.removeItem('detail');
+        sessionStorage.removeItem("edit")
+    });
+
     const [activeMenu, setActiveMenu] = useState("buat_surat"); 
     return (
         

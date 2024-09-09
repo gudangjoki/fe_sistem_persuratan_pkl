@@ -15,7 +15,10 @@ export const LetterManagementProvider = ({ children }) => {
   const [letterData, setLetterData] = useState({
     "letter_title": "",
     "letter_id_type": 0,
-    "letter_keywords": [],
+    "letter_keywords": [{
+      "label": null,
+      "value": null
+    }],
     "letter_path": "",
     "letter_no": ""
   });

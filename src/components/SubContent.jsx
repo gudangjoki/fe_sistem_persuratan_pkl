@@ -12,30 +12,59 @@ import Button from "./SingleButton";
 import { Dialog } from "@headlessui/react";
 
 import { Menu } from '@headlessui/react';
+import { InvalidTokenError } from "jwt-decode";
 // const lazyListLetter = lazy(() => import('./ListLetter'));
 
 /* eslint-disable react/prop-types */
 function ActionDropdown(props) {
   const { letterId } = props;
   const [detailLetter, setDetailLetter] = useState({});
+  const [keywordLetter, setKeywordLetter] = useState([]);
   const token = Cookies.get('access_token'); 
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
  
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const openEditModal = () => setIsEditOpen(true);
-  const closeEditModal = () => setIsEditOpen(false);
-  const [fetched, setFetched] = useState(false);
+
+  // const [fetched, setFetched] = useState(false);
   const openDetailModal = (letterIdPassed) => {
     console.log(letterIdPassed)
     Cookies.set('letterId', letterIdPassed);
+    sessionStorage.setItem('detail', true);
     setIsDetailOpen(true);
-    // if (!fetched) {
-      // getDetailLetter(letterIdPassed);
-    //   // setFetched(false)
-    // }
   }
-  const closeDetailModal = () => setIsDetailOpen(false);
+
+  const closeDetailModal = () => {
+    setIsDetailOpen(false);
+    sessionStorage.removeItem('detail');
+    // Cookies.remove('letter_id');
+    // setFetched(false);
+  }
+
+  // const [letter, setLetter] = useState({
+  //   "letter_id": "",
+  //   "letter_no": "",
+  //   "letter_title": "",
+  //   "letter_path": "",
+  //   "letter_type": "",
+  //   "author_email": "",
+  //   "author_name": "",
+  //   "author_username": "",
+  //   "letter_keywords": [],
+  //   "letter_created_at": ""
+  // });
+  
+  const openEditModal = () => {
+    Cookies.set('letterId', letterId);
+    sessionStorage.setItem('edit', true);
+    setIsEditOpen(true);
+  }
+
+  const closeEditModal = () => {
+    setIsEditOpen(false);
+    sessionStorage.removeItem('edit');
+    // Cookies.remove('letter_id');
+  }
 
 //   useEffect(() => {
 //   if (isDetailOpen && letterId && !fetched) {
@@ -45,10 +74,11 @@ function ActionDropdown(props) {
 
   useEffect(() => {
     const letterIdPassed = Cookies.get('letterId');
-    if (isDetailOpen) {
+    if (isDetailOpen || isEditOpen ) {
       getDetailLetter(letterIdPassed);
+      // setFetched(true);
     }
-  }, [isDetailOpen])
+  }, [isDetailOpen, isEditOpen]);
 
   const getDetailLetter = async (letterId) => {
     // if (!letterId) return;
@@ -76,7 +106,21 @@ function ActionDropdown(props) {
 
       response.data.data.created_at = formattedDate;
 
-      setDetailLetter(response.data.data);
+      const { data, keywords_data } = response.data;
+
+      setDetailLetter(data);
+      let datas = [];
+      let keyword = {
+        value: "",
+        label: ""
+      };
+      keywords_data.foreach((val) => {
+        keyword.value = val.keyword_name;
+        keyword.label = val.id;
+
+        datas.push(keyword);
+      })
+      setKeywordLetter(datas);
       // setFetched(true);
       Cookies.remove('letterId');
     } catch (error) {
@@ -93,6 +137,18 @@ function ActionDropdown(props) {
   //   const letterId = Cookies.get('letter_id');
 
   // }, []);
+
+  const editChangeLetter = (e) => {
+    const { name, value } = e.target;
+    setDetailLetter((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  useEffect(() => {
+    console.log(detailLetter);
+  }, [detailLetter]);
 
   return (
     <>
@@ -138,7 +194,7 @@ function ActionDropdown(props) {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={openEditModal}
+                  onClick={() => openEditModal(letterId)}
                   className={`${
                     active
                       ? "bg-gray-100 text-gray-900"
@@ -243,7 +299,7 @@ function ActionDropdown(props) {
                     >
                       Tipe Surat
                     </label>
-                    <SelectItem name="hs-tipe-surat" token="" disabledSelect="true"/>
+                    <SelectItem name="hs-tipe-surat" token="" disabledSelect="true" typeLetter={detailLetter.letter_type}/>
                   </div>
 
                   <div>
@@ -253,7 +309,7 @@ function ActionDropdown(props) {
                     >
                       List Keyword
                     </label>
-                    <SelectMultiple name="hs-list-keyword" token="" disabledSelect="true"/>
+                    <SelectMultiple name="hs-list-keyword" token="" disabledSelect="true" keywordsLetter={detailLetter.letter_keywords}/>
                   </div>
                 </div>
 
@@ -298,11 +354,12 @@ function ActionDropdown(props) {
                     </label>
                     <input
                       type="text"
-                      onChange=""
                       name="letter_no"
-                      value=""
+                      onChange={editChangeLetter}
+                      value={detailLetter.letter_no}
                       id="edit-id-surat"
                       className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                      disabled
                     />
                   </div>
 
@@ -314,11 +371,12 @@ function ActionDropdown(props) {
                       Tanggal Simpan
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       name="hs-tanggal-surat"
                       id="edit-tanggal-surat"
-                      value=""
-                      onChange=""
+                      onChange={editChangeLetter}
+                      value={detailLetter.created_at}
+                      disabled
                       className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                     />
                   </div>
@@ -333,10 +391,10 @@ function ActionDropdown(props) {
                   </label>
                   <input
                     type="text"
-                    onChange=""
+                    onChange={editChangeLetter}
+                    value={detailLetter.letter_title}
                     name="letter_title"
                     id="edit-judul-surat"
-                    value=""
                     autoComplete="email"
                     className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                   />
@@ -353,8 +411,9 @@ function ActionDropdown(props) {
                     <SelectItem
                       name="edit-tipe-surat"
                       value=""
-                      token=""
+                      token={token}
                       onChange= ""
+                      defaultData = {detailLetter.letter_type}
                     />
                   </div>
 
@@ -368,8 +427,9 @@ function ActionDropdown(props) {
                     <SelectMultiple
                       name="edit-list-keyword"
                       value=""
-                      token=""
+                      token={token}
                       onChange=""
+                      defaultData = {keywordLetter}
                     />
                   </div>
                 </div>
@@ -473,7 +533,12 @@ export default function SubContent({ activeMenu }) {
 
   // const [viewLetter, setViewLetter] = useState([]);
 
-  const token = Cookies.get("access_token");
+  const [token, setToken] = useState(Cookies.get("access_token"));
+
+
+  // useEffect(() => {
+  //   setToken();
+  // }, [token]);
 
   const getAllLetters = async () => {
     const BASE_URL = "http://localhost:8000/api/letters?type=&index=0";
@@ -697,7 +762,7 @@ export default function SubContent({ activeMenu }) {
                       >
                           Tipe Surat
                       </label>
-                      <SelectItem name="hs-tipe-surat" token={token} />
+                      <SelectItem name="hs-tipe-surat" tokenProps={token} />
                       </div>
 
                       <div>
@@ -707,7 +772,7 @@ export default function SubContent({ activeMenu }) {
                       >
                           List Keyword
                       </label>
-                      <SelectMultiple name="hs-list-keyword" token={token} />
+                      <SelectMultiple name="hs-list-keyword" tokenProps={token} />
                       </div>
                   </div>
                   <div>
