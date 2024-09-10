@@ -474,6 +474,126 @@ function ActionDropdown(props) {
   );
 }
 
+function CreateRole(){
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const openCreateModal = () => {
+    setIsCreateOpen(true);
+  };
+
+  const closeCreateModal = () => {
+    setIsCreateOpen(false);
+  };
+  return (
+    <>
+      <a
+          className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+          onClick={openCreateModal}
+        >
+          <svg
+            className="shrink-0 size-4"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Add role
+        </a>
+      <Dialog
+          open={isCreateOpen}
+          onClose={closeCreateModal}
+          className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto bg-black bg-opacity-50"
+        >
+        <div className="p-6 m-3 mx-auto bg-white rounded-md sm:w-full sm:mx-auto sm:max-w-4xl h-fit">
+          <Dialog.Title className="text-lg font-bold">Add Role</Dialog.Title>
+          <Dialog.Description className="mt-2">
+            <form>
+              
+              <div className="grid gap-4 mt-6 lg:gap-6">
+                <div>
+                  <label
+                    htmlFor="hs-judul-surat"
+                    className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    Nama
+                  </label>
+                  <input
+                    type="text"
+                    onChange=""
+                    name="letter_title"
+                    id="hs-judul-surat"
+                    autoComplete="email"
+                    className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="hs-judul-surat"
+                    className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    Permission Access
+                  </label>
+                  <div className="border border-gray-200 rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700 ">
+                      <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 ">
+                        <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
+                          <td className="size-px whitespace-nowrap">
+                            <div className="px-6 py-3">
+                              <span className="text-sm text-gray-600 dark:text-neutral-400">Streamlab</span>
+                            </div>
+                          </td>
+                          <td className="size-px whitespace-nowrap">
+                            <div className="py-3 ps-6">
+                              <label htmlFor="hs-at-with-checkboxes-1" className="flex">
+                                <input type="checkbox" className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hs-at-with-checkboxes-1" />
+                                <span className="sr-only">Checkbox</span>
+                              </label>
+                            </div>
+                          </td>                      
+                        </tr>
+                        <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
+                          <td className="size-px whitespace-nowrap">
+                            <div className="px-6 py-3">
+                              <span className="text-sm text-gray-600 dark:text-neutral-400">Streamlab</span>
+                            </div>
+                          </td>
+                          <td className="size-px whitespace-nowrap">
+                            <div className="py-3 ps-6">
+                              <label htmlFor="hs-at-with-checkboxes-1" className="flex">
+                                <input type="checkbox" className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hs-at-with-checkboxes-1" />
+                                <span className="sr-only">Checkbox</span>
+                              </label>
+                            </div>
+                          </td>                      
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </Dialog.Description>
+
+          <button
+            onClick={closeCreateModal}
+            className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md"
+          >
+            Close
+          </button>
+        </div>
+      </Dialog>
+    </>
+  );
+}
+
 // SVG Icons
 function DetailIcon(props) {
   return (
@@ -947,9 +1067,12 @@ export default function SubContent({ activeMenu }) {
 
       {activeMenu === "manajemen_role" && (
           <div>
+            <div className="flex items-center justify-between">
               <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
                   Manajemen Role
               </h2>
+              <CreateRole />
+            </div>
               <div className="flex flex-col">
                 <div className="-m-1.5 overflow-x-auto">
                   <div className="p-1.5 min-w-full inline-block align-middle">
