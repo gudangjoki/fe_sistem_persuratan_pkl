@@ -15,9 +15,10 @@ export default function SelectItem(props) {
   const [loading, setLoading] = useState(true);
 
   const [token, setToken] = useState(Cookies.get('access_token'));
+  const [selectedType, setSelectedType] = useState(-1);
   // const [selectedType, setSelectedType] = useState(letterType); // state for selected letterType
 
-  const BASE_URL = "http://localhost:8000/api/letter_types";
+  const BASE_URL = `http://localhost:8000/api/letter_types?selected=${selectedType}`;
   const options = {
     headers: {
       "Content-Type": "application/json",
@@ -41,7 +42,7 @@ export default function SelectItem(props) {
   };
 
   const [letterFull, setLetterFull] = useState(null);
-  const [letterTypeAh, setLetterTypeAh] = useState(null);
+  const [letterTypeAh, setLetterTypeAh] = useState({});
   const [loadNew, setLoadNew] = useState(null);
 
   const getLetterEdit = async (letterId) => {
@@ -55,8 +56,15 @@ export default function SelectItem(props) {
       console.log(response.data);
       // setSuccess(true);
       // setTypes(types);
+
       setLetterFull(keywords_data);
+      // data.letter_id_type.map((val, idx) => {
+      //   if(idx === val - 1)
+      //     setLetterTypeAh(val);
+      //     return;
+      // });
       setLetterTypeAh(data.letter_id_type);
+      setSelectedType(data.letter_id_type.id);
     } catch (err) {
       // setSuccess(false);
       console.log(err);
@@ -80,7 +88,7 @@ export default function SelectItem(props) {
       }
 
     getAllType();
-  }, []);
+  }, [selectedType]);
 
   const changeSelectType = (e) => {
     const value = e.target.value;
@@ -131,13 +139,14 @@ export default function SelectItem(props) {
                 }'
         id={name}
         name="letter_id_type"
-        disabled={disabledSelect}
+        disabled={loadNew}
+        // disabled={disabledSelect}
         onChange={changeSelectType}
         // value={selectedType} // Use the selected type state
         className={`block w-full px-3 py-3 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         style={{ appearance: "none", background: "none", paddingRight: "30px" }}
       >
-        {!loadNew ? (<option value="">Pilih Tipe Surat</option>):(<option value="">{letterTypeAh}</option>)}
+        {loadNew ? (<option value="">Pilih Tipe Surat</option>):(<option value={letterTypeAh.id}>{letterTypeAh.letter_type_name}</option>)}
         {success &&
           types.map((val) => (
             <option key={val.id} value={val.id}>
