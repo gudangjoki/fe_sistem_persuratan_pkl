@@ -21,7 +21,9 @@ function ActionDropdown(props) {
   const { letterId } = props;
   const [detailLetter, setDetailLetter] = useState({});
   const [keywordLetter, setKeywordLetter] = useState([]);
-  const [token] = useState(Cookies.get('access_token')); 
+
+  const getCookie = Cookies.get('access_token');
+  const [token, setToken] = useState(getCookie);
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
  
@@ -85,6 +87,7 @@ function ActionDropdown(props) {
 
   const getDetailLetter = async (letterId) => {
     // if (!letterId) return;
+    setToken(getCookie);
     const BASE_URL = `http://localhost:8000/api/letter/${letterId}`;
     const options = {
       headers: {
@@ -537,7 +540,8 @@ export default function SubContent({ activeMenu }) {
 
   // const [viewLetter, setViewLetter] = useState([]);
 
-  const [token, setToken] = useState(Cookies.get("access_token"));
+  const getCookie = Cookies.get("access_token");
+  const [token, setToken] = useState(getCookie);
   const [disableNext, setDisableNext] = useState(false);
 
 
@@ -548,6 +552,7 @@ export default function SubContent({ activeMenu }) {
   // const [search, setSearch] = useState("");
 
   const getAllLetters = async () => {
+    setToken(getCookie);
     const BASE_URL = `http://localhost:8000/api/letters?type=&index=${page}&keyword=${debouncedSearch}`;
     const options = {
       headers: {
@@ -605,6 +610,7 @@ export default function SubContent({ activeMenu }) {
   };
 
   const submitNewLetter = async () => {
+    setToken(getCookie);
     const options = {
       headers: {
         "Content-Type": "application/json",

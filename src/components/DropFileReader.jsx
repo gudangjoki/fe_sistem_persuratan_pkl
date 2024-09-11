@@ -18,13 +18,13 @@ const FileDownload = (props) => {
           </span>
           <div>
             <p class="text-sm font-medium text-gray-800">
-              <span class="truncate inline-block max-w-[300px] align-bottom" data-dz-name>${letterData?.file_name || 'No file available'}</span>
+              <span class="truncate inline-block max-w-[300px] align-bottom" data-dz-name>${letterPath ? 'PDF File is Available' : 'No file available'}</span>
             </p>
             <p class="text-xs text-gray-500" data-dz-size></p>
           </div>
         </div>
         <div class="flex items-center gap-x-2">
-          <a href="${`http://localhost:8000${letterPath}`}" download class="flex items-center gap-x-2 text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 whitespace-nowrap dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500">
+          <a href="${letterPath !== null && `http://localhost:8000${letterPath}`}" download class="flex items-center gap-x-2 text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 whitespace-nowrap dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500">
             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
             <span class="ml-1">Download</span>
           </a>

@@ -14,7 +14,9 @@ export default function SelectItem(props) {
   const { letterData, setLetterData } = useLetter();
   const [loading, setLoading] = useState(true);
 
-  const [token, setToken] = useState(Cookies.get('access_token'));
+  const getCookie = Cookies.get('access_token');
+  const [token, setToken] = useState(getCookie);
+  
   const [selectedType, setSelectedType] = useState(-1);
   // const [selectedType, setSelectedType] = useState(letterType); // state for selected letterType
 
@@ -27,6 +29,7 @@ export default function SelectItem(props) {
   };
 
   const getAllType = async () => {
+    setToken(getCookie);
     setLoading(true);
     try {
       const response = await axios.get(BASE_URL, options);
@@ -46,6 +49,7 @@ export default function SelectItem(props) {
   const [loadNew, setLoadNew] = useState(null);
 
   const getLetterEdit = async (letterId) => {
+    setToken(getCookie);
     setLoadNew(true);
     setLoadingFetch(true);
 
@@ -76,16 +80,14 @@ export default function SelectItem(props) {
 
   useEffect(() => {
     if (
-      sessionStorage.getItem("activeMenu") !== "buat_surat" &&
-      !sessionStorage.getItem("detail")
+      sessionStorage.getItem("activeMenu") !== "buat_surat"
     )
-      if (!sessionStorage.getItem("edit")) {
-        return;
-      } 
-      else {
-        const letterId = Cookies.get('letterId');
-        getLetterEdit(letterId);
-      }
+    if (!sessionStorage.getItem("edit") && !sessionStorage.getItem("detail")) {
+      return;
+    } else {
+      const letterId = Cookies.get('letterId');
+      getLetterEdit(letterId);  
+    }
 
     getAllType();
   }, [selectedType]);
@@ -114,7 +116,7 @@ export default function SelectItem(props) {
     console.log(letterTypeAh);
   }, [letterTypeAh]);
 
-  if (loading && !sessionStorage.getItem("detail")) {
+  if (loading || loadingFetch && !sessionStorage.getItem("detail")) {
     return (
       <div className="flex animate-pulse">
         <div className="w-full">
@@ -139,14 +141,14 @@ export default function SelectItem(props) {
                 }'
         id={name}
         name="letter_id_type"
-        disabled={loadNew}
+        disabled={sessionStorage.getItem("detail") === null ? loadNew : true}
         // disabled={disabledSelect}
         onChange={changeSelectType}
         // value={selectedType} // Use the selected type state
         className={`block w-full px-3 py-3 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         style={{ appearance: "none", background: "none", paddingRight: "30px" }}
       >
-        {loadNew ? (<option value="">Pilih Tipe Surat</option>):(<option value={letterTypeAh.id}>{letterTypeAh.letter_type_name}</option>)}
+        {loadingFetch ? (<option value="">Pilih Tipe Surat</option>):(<option value={letterTypeAh.id}>{letterTypeAh.letter_type_name}</option>)}
         {success &&
           types.map((val) => (
             <option key={val.id} value={val.id}>

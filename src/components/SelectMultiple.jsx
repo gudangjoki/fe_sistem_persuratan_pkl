@@ -14,7 +14,9 @@ export default function SelectMultiple(props) {
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [token, setToken] = useState(Cookies.get('access_token'));
+  const getCookie = Cookies.get('access_token');
+
+  const [token, setToken] = useState(getCookie);
 
   const { letterData, setLetterData } = useLetter();
 
@@ -28,6 +30,7 @@ export default function SelectMultiple(props) {
   };
 
   const getAllType = async () => {
+    setToken(getCookie);
     setLoading(true);
     try {
       const response = await axios.get(BASE_URL, options);
@@ -53,6 +56,7 @@ export default function SelectMultiple(props) {
   const [loadNew, setLoadNew] = useState(null);
 
   const getKeywordEdit = async (letterId) => {
+    setToken(getCookie);
     setLoadNew(true);
     setLoadingFetch(true);
 
@@ -82,18 +86,17 @@ export default function SelectMultiple(props) {
 
   useEffect(() => {
     if (
-      sessionStorage.getItem("activeMenu") !== "buat_surat" &&
-      !sessionStorage.getItem("detail")
+      sessionStorage.getItem("activeMenu") !== "buat_surat"
     )
-    if (!sessionStorage.getItem("edit")) {
+    if (!sessionStorage.getItem("edit") && !sessionStorage.getItem("detail")) {
       return;
     } else {
       const letterId = Cookies.get('letterId');
-      getKeywordEdit(letterId);
+      getKeywordEdit(letterId);  
     }
 
     getAllType();
-  }, []);
+  }, [token]);
 
   const handleKeywords = (selectedKeywords) => {
     const newKeywordTemp = [];
@@ -160,7 +163,7 @@ export default function SelectMultiple(props) {
     }),
   };
 
-  if (loading && !sessionStorage.getItem("detail")) {
+  if (loading || loadingFetch && !sessionStorage.getItem("detail")) {
     return (
       <div className="flex animate-pulse">
         {/* <div className="shrink-0">
@@ -190,7 +193,7 @@ export default function SelectMultiple(props) {
       styles={customStyles}
       isDisabled={disabledSelect}
       style={{ appearance: "none", background: "none", paddingRight: "30px" }}
-      value={(!loading && letterKeyAh.length > 0) ? letterKeyAh : undefined}
+      value={(!loadingFetch && letterKeyAh.length > 0) ? letterKeyAh : undefined}
     />
   );
 }
