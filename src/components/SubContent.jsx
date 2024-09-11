@@ -12,9 +12,11 @@ import OverlayItem from "./OverlayItem";
 // import DropdownItem from "./DropdownItem";
 import { Dialog } from "@headlessui/react";
 
-import { Menu } from '@headlessui/react';
+import { Menu } from "@headlessui/react";
 import { InvalidTokenError } from "jwt-decode";
 // const lazyListLetter = lazy(() => import('./ListLetter'));
+
+import { snakeCase } from 'lodash';
 
 /* eslint-disable react/prop-types */
 function ActionDropdown(props) {
@@ -22,29 +24,29 @@ function ActionDropdown(props) {
   const [detailLetter, setDetailLetter] = useState({});
   const [keywordLetter, setKeywordLetter] = useState([]);
 
-  const getCookie = Cookies.get('access_token');
+  const getCookie = Cookies.get("access_token");
   const [token, setToken] = useState(getCookie);
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
- 
+
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const { loadingFetch, setLoadingFetch } = useLetter();
 
   // const [fetched, setFetched] = useState(false);
   const openDetailModal = (letterIdPassed) => {
-    console.log(letterIdPassed)
-    Cookies.set('letterId', letterIdPassed);
-    sessionStorage.setItem('detail', true);
+    console.log(letterIdPassed);
+    Cookies.set("letterId", letterIdPassed);
+    sessionStorage.setItem("detail", true);
     setIsDetailOpen(true);
-  }
+  };
 
   const closeDetailModal = () => {
     setIsDetailOpen(false);
-    sessionStorage.removeItem('detail');
+    sessionStorage.removeItem("detail");
     // Cookies.remove('letter_id');
     // setFetched(false);
-  }
+  };
 
   // const [letter, setLetter] = useState({
   //   "letter_id": "",
@@ -58,28 +60,28 @@ function ActionDropdown(props) {
   //   "letter_keywords": [],
   //   "letter_created_at": ""
   // });
-  
+
   const openEditModal = () => {
-    Cookies.set('letterId', letterId);
-    sessionStorage.setItem('edit', true);
+    Cookies.set("letterId", letterId);
+    sessionStorage.setItem("edit", true);
     setIsEditOpen(true);
-  }
+  };
 
   const closeEditModal = () => {
     setIsEditOpen(false);
-    sessionStorage.removeItem('edit');
+    sessionStorage.removeItem("edit");
     // Cookies.remove('letter_id');
-  }
+  };
 
-//   useEffect(() => {
-//   if (isDetailOpen && letterId && !fetched) {
-//     getDetailLetter(letterId);
-//   }
-// }, [isDetailOpen, letterId, fetched]);
+  //   useEffect(() => {
+  //   if (isDetailOpen && letterId && !fetched) {
+  //     getDetailLetter(letterId);
+  //   }
+  // }, [isDetailOpen, letterId, fetched]);
 
   useEffect(() => {
-    const letterIdPassed = Cookies.get('letterId');
-    if (isDetailOpen || isEditOpen ) {
+    const letterIdPassed = Cookies.get("letterId");
+    if (isDetailOpen || isEditOpen) {
       getDetailLetter(letterIdPassed);
       // setFetched(true);
     }
@@ -91,21 +93,21 @@ function ActionDropdown(props) {
     const BASE_URL = `http://localhost:8000/api/letter/${letterId}`;
     const options = {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    }
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     try {
       const response = await axios.get(BASE_URL, options);
       console.log(response.data.data.created_at);
 
-      const letterDateString = response.data.data.created_at
+      const letterDateString = response.data.data.created_at;
 
       const date = new Date(letterDateString);
 
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
       const year = date.getFullYear();
 
       const formattedDate = `${day}/${month}/${year}`;
@@ -118,26 +120,25 @@ function ActionDropdown(props) {
       let datas = [];
       let keyword = {
         value: "",
-        label: ""
+        label: "",
       };
       keywords_data.foreach((val) => {
         keyword.value = val.keyword_name;
         keyword.label = val.id;
 
         datas.push(keyword);
-      })
+      });
       setKeywordLetter(datas);
       // setFetched(true);
-      Cookies.remove('letterId');
+      Cookies.remove("letterId");
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     console.log(detailLetter);
   }, [detailLetter]);
-
 
   // useEffect(() => {
   //   const letterId = Cookies.get('letter_id');
@@ -148,9 +149,9 @@ function ActionDropdown(props) {
     const { name, value } = e.target;
     setDetailLetter((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   useEffect(() => {
     console.log(detailLetter);
@@ -180,9 +181,7 @@ function ActionDropdown(props) {
         </Menu.Button>
 
         {/* Menu Items */}
-        <Menu.Items
-          className="fixed right-0 z-50 w-48 mt-2 bg-white divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none"
-        >
+        <Menu.Items className="fixed right-0 z-50 w-48 mt-2 bg-white divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none">
           <div className="px-1 py-1">
             <Menu.Item>
               {({ active }) => (
@@ -202,9 +201,7 @@ function ActionDropdown(props) {
                 <button
                   onClick={() => openEditModal(letterId)}
                   className={`${
-                    active
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-700"
+                    active ? "bg-gray-100 text-gray-900" : "text-gray-700"
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                 >
                   <EditIcon className="w-5 h-5 mr-3" />
@@ -217,9 +214,7 @@ function ActionDropdown(props) {
                 <a
                   href="#"
                   className={`${
-                    active
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-700"
+                    active ? "bg-gray-100 text-gray-900" : "text-gray-700"
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                 >
                   <DeleteIcon className="w-5 h-5 mr-3" />
@@ -236,10 +231,11 @@ function ActionDropdown(props) {
         className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto bg-black bg-opacity-50"
       >
         <div className="p-6 m-3 mx-auto bg-white rounded-md sm:w-full sm:mx-auto sm:max-w-4xl h-fit">
-          <Dialog.Title className="text-lg font-bold">Detail Surat</Dialog.Title>
+          <Dialog.Title className="text-lg font-bold">
+            Detail Surat
+          </Dialog.Title>
           <Dialog.Description className="mt-2">
             <form>
-              
               <div className="grid gap-4 mt-6 lg:gap-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
                   <div>
@@ -305,7 +301,12 @@ function ActionDropdown(props) {
                     >
                       Tipe Surat
                     </label>
-                    <SelectItem name="hs-tipe-surat" token="" disabledSelect="true" typeLetter={detailLetter.letter_type}/>
+                    <SelectItem
+                      name="hs-tipe-surat"
+                      token=""
+                      disabledSelect="true"
+                      typeLetter={detailLetter.letter_type}
+                    />
                   </div>
 
                   <div>
@@ -315,7 +316,12 @@ function ActionDropdown(props) {
                     >
                       List Keyword
                     </label>
-                    <SelectMultiple name="hs-list-keyword" token="" disabledSelect="true" keywordsLetter={detailLetter.letter_keywords}/>
+                    <SelectMultiple
+                      name="hs-list-keyword"
+                      token=""
+                      disabledSelect="true"
+                      keywordsLetter={detailLetter.letter_keywords}
+                    />
                   </div>
                 </div>
 
@@ -419,8 +425,8 @@ function ActionDropdown(props) {
                       name="edit-tipe-surat"
                       value=""
                       token={token}
-                      onChange= ""
-                      defaultData = {detailLetter.letter_type}
+                      onChange=""
+                      defaultData={detailLetter.letter_type}
                     />
                   </div>
 
@@ -436,7 +442,7 @@ function ActionDropdown(props) {
                       value=""
                       token={token}
                       onChange=""
-                      defaultData = {keywordLetter}
+                      defaultData={keywordLetter}
                     />
                   </div>
                 </div>
@@ -473,12 +479,43 @@ function ActionDropdown(props) {
         </div>
       </Dialog>
     </>
-
   );
 }
 
-function CreateRole(){
+function CreateRole() {
+  const getCookie = Cookies.get("access_token");
+  const [token, setToken] = useState(getCookie);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [permissions, setPermissions] = useState([]);
+  const [fetchPermissionLoading, setFetchPermissionLoading] = useState(null);
+
+  const getAllPermissionPoints = async () => {
+    setToken(getCookie);
+    setFetchPermissionLoading(true);
+    const BASE_URL = "http://localhost:8000/api/permissions";
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await axios.get(BASE_URL, options);
+      console.log(response.data);
+      const { success, data } = response.data;
+      setPermissions(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setFetchPermissionLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isCreateOpen) return;
+    getAllPermissionPoints();
+  }, [isCreateOpen]);
 
   const openCreateModal = () => {
     setIsCreateOpen(true);
@@ -487,39 +524,104 @@ function CreateRole(){
   const closeCreateModal = () => {
     setIsCreateOpen(false);
   };
+
+  const [checkedPermissions, setCheckedPermissions] = useState({
+    "role_name": "",
+    "permission_id": []
+  });
+
+  const handleRoleName = (e) => {
+    const { name, value } = e.target;
+    setCheckedPermissions((prev) => ({
+      ...prev,
+      [name]: snakeCase(value)
+    }))
+  }
+
+  const handleCheckboxChange = (val) => {
+    setCheckedPermissions((prevState) => {
+      if (prevState.permission_id.includes(val.id)) {
+        // Jika checkbox dimatikan, hapus dari array
+        return {
+          ...prevState,
+          permission_id: prevState.permission_id.filter((id) => id !== val.id),
+        };
+      } else {
+        // Jika checkbox dinyalakan, tambahkan ke array
+        return {
+          ...prevState,
+          permission_id: [...prevState.permission_id, val.id],
+        };
+      }
+    });
+  };
+
+    const addNewRole = async (e) => {
+      e.preventDefault();
+      setToken(getCookie);
+
+      const BASE_URL = 'http://localhost:8000/api/role';
+      const options = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const body = JSON.stringify(checkedPermissions);
+
+      try {
+        const response = await axios.post(BASE_URL, body, options);
+        console.log(response.data);
+        setCheckedPermissions({
+          "role_name": "",
+          "permission_id": []
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
+    }
+  
+  useEffect(() => {
+    console.log(checkedPermissions);
+  }, [checkedPermissions]);
+
+  useEffect(() => {
+    console.log(permissions);
+  }, [permissions]);
+
   return (
     <>
       <a
-          className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-          onClick={openCreateModal}
+        className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+        onClick={openCreateModal}
+      >
+        <svg
+          className="shrink-0 size-4"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <svg
-            className="shrink-0 size-4"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M5 12h14" />
-            <path d="M12 5v14" />
-          </svg>
-          Add role
-        </a>
+          <path d="M5 12h14" />
+          <path d="M12 5v14" />
+        </svg>
+        Add role
+      </a>
       <Dialog
-          open={isCreateOpen}
-          onClose={closeCreateModal}
-          className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto bg-black bg-opacity-50"
-        >
+        open={isCreateOpen}
+        onClose={closeCreateModal}
+        className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto bg-black bg-opacity-50"
+      >
         <div className="p-6 m-3 mx-auto bg-white rounded-md sm:w-full sm:mx-auto sm:max-w-4xl h-fit">
           <Dialog.Title className="text-lg font-bold">Add Role</Dialog.Title>
           <Dialog.Description className="mt-2">
             <form>
-              
               <div className="grid gap-4 mt-6 lg:gap-6">
                 <div>
                   <label
@@ -530,8 +632,9 @@ function CreateRole(){
                   </label>
                   <input
                     type="text"
-                    onChange=""
-                    name="letter_title"
+                    onChange={handleRoleName}
+                    // value={checkedPermissions.role_name}
+                    name="role_name"
                     id="hs-judul-surat"
                     autoComplete="email"
                     className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -546,37 +649,142 @@ function CreateRole(){
                   </label>
                   <div className="border border-gray-200 rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700 ">
-                      <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 ">
-                        <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
-                          <td className="size-px whitespace-nowrap">
-                            <div className="px-6 py-3">
-                              <span className="text-sm text-gray-600 dark:text-neutral-400">Streamlab</span>
-                            </div>
-                          </td>
-                          <td className="size-px whitespace-nowrap">
-                            <div className="py-3 ps-6">
-                              <label htmlFor="hs-at-with-checkboxes-1" className="flex">
-                                <input type="checkbox" className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hs-at-with-checkboxes-1" />
-                                <span className="sr-only">Checkbox</span>
-                              </label>
-                            </div>
-                          </td>                      
-                        </tr>
-                        <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
-                          <td className="size-px whitespace-nowrap">
-                            <div className="px-6 py-3">
-                              <span className="text-sm text-gray-600 dark:text-neutral-400">Streamlab</span>
-                            </div>
-                          </td>
-                          <td className="size-px whitespace-nowrap">
-                            <div className="py-3 ps-6">
-                              <label htmlFor="hs-at-with-checkboxes-1" className="flex">
-                                <input type="checkbox" className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hs-at-with-checkboxes-1" />
-                                <span className="sr-only">Checkbox</span>
-                              </label>
-                            </div>
-                          </td>                      
-                        </tr>
+                      <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                        {!fetchPermissionLoading ? (
+                          <>
+                            <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
+                              <td className="size-px whitespace-nowrap">
+                                <div className="px-6 py-3">
+                                  <span className="text-md font-bold text-gray-600 dark:text-neutral-400">
+                                    Manajemen Surat
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            {permissions?.letter?.map((val) => (
+                              <tr
+                                key={val.id}
+                                className="divide-x divide-gray-200 dark:divide-neutral-700"
+                              >
+                                <td className="size-px whitespace-nowrap">
+                                  <div className="px-6 py-3">
+                                    <span className="text-sm text-gray-600 dark:text-neutral-400">
+                                      {val.permission_name}
+                                    </span>
+                                  </div>
+                                </td>
+
+                                <td className="size-px whitespace-nowrap">
+                                  <div className="py-3 ps-6">
+                                    <label
+                                      htmlFor={`letter-checkbox-${val.id}`}
+                                      className="flex"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                                        id={`letter-checkbox-${val.id}`}
+                                        checked={checkedPermissions.permission_id.includes(val.id)}
+                                        onChange={() => handleCheckboxChange(val)}
+                                      />
+                                      <span className="sr-only">Checkbox</span>
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+
+                            <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
+                              <td className="size-px whitespace-nowrap">
+                                <div className="px-6 py-3">
+                                  <span className="text-md font-bold text-gray-600 dark:text-neutral-400">
+                                    Manajemen User
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+
+                            {permissions?.user?.map((val) => (
+                              <tr
+                                key={val.id}
+                                className="divide-x divide-gray-200 dark:divide-neutral-700"
+                              >
+                                <td className="size-px whitespace-nowrap">
+                                  <div className="px-6 py-3">
+                                    <span className="text-sm text-gray-600 dark:text-neutral-400">
+                                      {val.permission_name}
+                                    </span>
+                                  </div>
+                                </td>
+
+                                <td className="size-px whitespace-nowrap">
+                                  <div className="py-3 ps-6">
+                                    <label
+                                      htmlFor={`users-checkbox-${val.id}`}
+                                      className="flex"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                                        id={`users-checkbox-${val.id}`}
+                                        checked={checkedPermissions.permission_id.includes(val.id)}
+                                        onChange={() => handleCheckboxChange(val)}
+                                      />
+                                      <span className="sr-only">Checkbox</span>
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+
+                            <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
+                              <td className="size-px whitespace-nowrap">
+                                <div className="px-6 py-3">
+                                  <span className="text-md font-bold text-gray-600 dark:text-neutral-400">
+                                    Manajemen Role
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+
+                            {permissions?.role?.map((val) => (
+                              <tr
+                                key={val.id}
+                                className="divide-x divide-gray-200 dark:divide-neutral-700"
+                              >
+                                <td className="size-px whitespace-nowrap">
+                                  <div className="px-6 py-3">
+                                    <span className="text-sm text-gray-600 dark:text-neutral-400">
+                                      {val.permission_name}
+                                    </span>
+                                  </div>
+                                </td>
+
+                                <td className="size-px whitespace-nowrap">
+                                  <div className="py-3 ps-6">
+                                    <label
+                                      htmlFor={`users-checkbox-${val.id}`}
+                                      className="flex"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                                        id={`users-checkbox-${val.id}`}
+                                        checked={checkedPermissions.permission_id.includes(val.id)}
+                                        onChange={() => handleCheckboxChange(val)}
+                                      />
+                                      <span className="sr-only">Checkbox</span>
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </>
+                        ) : (
+                          <tr>
+                            <td colSpan="2"></td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -590,6 +798,14 @@ function CreateRole(){
             className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md"
           >
             Close
+          </button>
+
+          <button
+            // onClick={}
+            className="px-4 py-2 mt-4 ml-2 text-white bg-green-500 rounded-md"
+            onClick={addNewRole}
+          >
+            Save
           </button>
         </div>
       </Dialog>
@@ -623,7 +839,11 @@ function EditIcon(props) {
       stroke="currentColor"
       {...props}
     >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11 4h9m-9 0H7m4 4h4m-4 4h4m-4 4h4m-4 0v-8" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M11 4h9m-9 0H7m4 4h4m-4 4h4m-4 4h4m-4 0v-8"
+      />
     </svg>
   );
 }
@@ -638,14 +858,16 @@ function DeleteIcon(props) {
       stroke="currentColor"
       {...props}
     >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18V6m12 12V6m-9 9h6m-6-6h6" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 18V6m12 12V6m-9 9h6m-6-6h6"
+      />
     </svg>
   );
 }
 
- 
 export default function SubContent({ activeMenu }) {
-  
   // const {  } = useAuth();
   const { letterData, setLetterData } = useLetter();
 
@@ -664,7 +886,6 @@ export default function SubContent({ activeMenu }) {
   const [token, setToken] = useState(getCookie);
   const [disableNext, setDisableNext] = useState(false);
 
-
   // useEffect(() => {
   //   setToken();
   // }, [token]);
@@ -676,12 +897,11 @@ export default function SubContent({ activeMenu }) {
     const BASE_URL = `http://localhost:8000/api/letters?type=&index=${page}&keyword=${debouncedSearch}`;
     const options = {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-      
-    }
-    
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
     try {
       const response = await axios.get(BASE_URL, options);
       const letter = response.data;
@@ -692,16 +912,15 @@ export default function SubContent({ activeMenu }) {
       } else {
         setDisableNext(false);
       }
-      setLoading(true)
-    } catch(err) {
+      setLoading(true);
+    } catch (err) {
       console.log(err);
     }
-
-  }
+  };
 
   const [page, setPage] = useState(0);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   useEffect(() => {
@@ -719,7 +938,6 @@ export default function SubContent({ activeMenu }) {
       getAllLetters();
     }
   }, [debouncedSearch, page]);
-
 
   const createLetterInput = (e) => {
     const { name, value } = e.target;
@@ -854,185 +1072,262 @@ export default function SubContent({ activeMenu }) {
         </div>
       )}
       {activeMenu === "buat_surat" && (
-          <div>
-              <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                  Formulir Surat
-              </h2>
-             
-              <form>
-                  <div className="grid gap-4 mt-6 lg:gap-6">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
-                      <div>
-                      <label
-                          htmlFor="hs-id-surat"
-                          className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
-                      >
-                          ID Surat
-                      </label>
-                      <input
-                          type="text"
-                          onChange={createLetterInput}
-                          name="letter_no"
-                          id="hs-id-surat"
-                          className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                      />
-                      </div>
+        <div>
+          <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
+            Formulir Surat
+          </h2>
 
-                      <div>
-                      <label
-                          htmlFor="hs-tanggal-surat"
-                          className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
-                      >
-                          Tanggal Simpan
-                      </label>
-                      <input
-                          type="date"
-                          name="hs-tanggal-surat"
-                          id="hs-tanggal-surat"
-                          className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                      />
-                      </div>
-                  </div>
+          <form>
+            <div className="grid gap-4 mt-6 lg:gap-6">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
+                <div>
+                  <label
+                    htmlFor="hs-id-surat"
+                    className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    ID Surat
+                  </label>
+                  <input
+                    type="text"
+                    onChange={createLetterInput}
+                    name="letter_no"
+                    id="hs-id-surat"
+                    className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                  />
+                </div>
 
-                  <div>
-                      <label
-                      htmlFor="hs-judul-surat"
-                      className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
-                      >
-                      Judul
-                      </label>
-                      <input
-                      type="text"
-                      onChange={createLetterInput}
-                      name="letter_title"
-                      id="hs-judul-surat"
-                      autoComplete="email"
-                      className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                      />
-                  </div>
+                <div>
+                  <label
+                    htmlFor="hs-tanggal-surat"
+                    className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    Tanggal Simpan
+                  </label>
+                  <input
+                    type="date"
+                    name="hs-tanggal-surat"
+                    id="hs-tanggal-surat"
+                    className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                  />
+                </div>
+              </div>
 
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
-                      <div>
-                      <label
-                          htmlFor="hs-tipe-surat"
-                          className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
-                      >
-                          Tipe Surat
-                      </label>
-                      <SelectItem name="hs-tipe-surat" tokenProps={token} />
-                      </div>
+              <div>
+                <label
+                  htmlFor="hs-judul-surat"
+                  className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                >
+                  Judul
+                </label>
+                <input
+                  type="text"
+                  onChange={createLetterInput}
+                  name="letter_title"
+                  id="hs-judul-surat"
+                  autoComplete="email"
+                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                />
+              </div>
 
-                      <div>
-                      <label
-                          htmlFor="hs-keyword-surat"
-                          className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
-                      >
-                          List Keyword
-                      </label>
-                      <SelectMultiple name="hs-list-keyword" tokenProps={token} />
-                      </div>
-                  </div>
-                  <div>
-                      <label
-                      htmlFor="hs-about-hire-us-1"
-                      className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
-                      >
-                      File Surat
-                      </label>
-                      <UploadFile token={token} />
-                  </div>
-                  <div>
-                      <div className="flex justify-end">
-                          <Button
-                          name="btn-save-surat"
-                          property="mt-5 px-10 "
-                          content="Save"
-                          saveLetter={submitNewLetter}
-                          />
-                      </div>
-                      {/* <Button
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
+                <div>
+                  <label
+                    htmlFor="hs-tipe-surat"
+                    className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    Tipe Surat
+                  </label>
+                  <SelectItem name="hs-tipe-surat" tokenProps={token} />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="hs-keyword-surat"
+                    className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    List Keyword
+                  </label>
+                  <SelectMultiple name="hs-list-keyword" tokenProps={token} />
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="hs-about-hire-us-1"
+                  className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                >
+                  File Surat
+                </label>
+                <UploadFile token={token} />
+              </div>
+              <div>
+                <div className="flex justify-end">
+                  <Button
+                    name="btn-save-surat"
+                    property="mt-5 px-10 "
+                    content="Save"
+                    saveLetter={submitNewLetter}
+                  />
+                </div>
+                {/* <Button
                       type="button"
                       className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                       
                       >
                       Create Letter */}
-                  </div>
-                  </div>
-              </form>
-          </div>
+              </div>
+            </div>
+          </form>
+        </div>
       )}
       {activeMenu === "list_surat" && (
-          <div>
-              <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                  List Surat
-              </h2>
-              <div className="flex flex-col">
-                  <div className="-m-1.5 overflow-x-auto">
-                      <div className="p-1.5 min-w-full inline-block align-middle">
-                        <div className="grid grid-cols-2 gap-2 py-4 border-b border-gray-200 md:flex md:justify-between md:items-center dark:border-neutral-700">
-                          <div className="col-span-1" style={{ width: '30%' }}>
-                            <label htmlFor="hs-as-table-product-review-search" className="sr-only">Search</label>
-                            <div className="relative">
-                              <input type="text" id="hs-as-table-product-review-search" name="hs-as-table-product-review-search" value={search} onChange={(e) => setSearch(e.target.value)} className="block w-full px-3 py-2 text-sm border border-gray-200 rounded-lg ps-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="Search" />
-                              <div className="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-4">
-                                <svg className="text-gray-400 shrink-0 size-4 dark:text-neutral-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      <div className="overflow-hidden">
-                          <table className="min-w-full divide-y divide-gray-200">
-                          <thead>
-                              <tr>
-                              <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">ID</th>
-                              <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Judul</th>
-                              <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Tanggal</th>
-                              <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Tipe</th>
-                              <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Keyword</th>
-                              <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-end">Action</th>
-                              </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-200">
-                            {loading && letterData.map((val) => {
-                              return (
-                              <tr key={val.letter_id} className="odd:bg-white even:bg-gray-100 hover:bg-gray-100 dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-700">
-                                  <td className="px-6 py-4 text-sm font-medium text-gray-800 break-words whitespace-normal">{val.letter_no}</td>
-                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">{val.letter_title}</td>
-                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 whitespace-nowrap">{val.letter_created_at}</td>
-                                  <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">{val.letter_type}</td>
-                                  <td className="max-w-xs px-6 py-4 space-x-2 space-y-2 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">
-                                    {val.letter_keywords.length != 0 && val.letter_keywords.map((word, idx) => {
-                                      return (
-                                      <span key={idx} className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-600 text-white dark:bg-blue-500">{word}</span>
-                                      )
-                                    })}
-                                    {/* <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-800 text-white dark:bg-white dark:text-neutral-800">Badge</span>
+        <div>
+          <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
+            List Surat
+          </h2>
+          <div className="flex flex-col">
+            <div className="-m-1.5 overflow-x-auto">
+              <div className="p-1.5 min-w-full inline-block align-middle">
+                <div className="grid grid-cols-2 gap-2 py-4 border-b border-gray-200 md:flex md:justify-between md:items-center dark:border-neutral-700">
+                  <div className="col-span-1" style={{ width: "30%" }}>
+                    <label
+                      htmlFor="hs-as-table-product-review-search"
+                      className="sr-only"
+                    >
+                      Search
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        id="hs-as-table-product-review-search"
+                        name="hs-as-table-product-review-search"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="block w-full px-3 py-2 text-sm border border-gray-200 rounded-lg ps-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                        placeholder="Search"
+                      />
+                      <div className="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-4">
+                        <svg
+                          className="text-gray-400 shrink-0 size-4 dark:text-neutral-500"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="11" cy="11" r="8" />
+                          <path d="m21 21-4.3-4.3" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="overflow-hidden">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start"
+                        >
+                          ID
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start"
+                        >
+                          Judul
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start"
+                        >
+                          Tanggal
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start"
+                        >
+                          Tipe
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start"
+                        >
+                          Keyword
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-end"
+                        >
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {loading &&
+                        letterData.map((val) => {
+                          return (
+                            <tr
+                              key={val.letter_id}
+                              className="odd:bg-white even:bg-gray-100 hover:bg-gray-100 dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-700"
+                            >
+                              <td className="px-6 py-4 text-sm font-medium text-gray-800 break-words whitespace-normal">
+                                {val.letter_no}
+                              </td>
+                              <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">
+                                {val.letter_title}
+                              </td>
+                              <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 whitespace-nowrap">
+                                {val.letter_created_at}
+                              </td>
+                              <td className="max-w-xs px-6 py-4 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">
+                                {val.letter_type}
+                              </td>
+                              <td className="max-w-xs px-6 py-4 space-x-2 space-y-2 overflow-hidden text-sm text-gray-800 break-words whitespace-normal">
+                                {val.letter_keywords.length != 0 &&
+                                  val.letter_keywords.map((word, idx) => {
+                                    return (
+                                      <span
+                                        key={idx}
+                                        className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-600 text-white dark:bg-blue-500"
+                                      >
+                                        {word}
+                                      </span>
+                                    );
+                                  })}
+                                {/* <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-800 text-white dark:bg-white dark:text-neutral-800">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-500 text-white">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-500 text-white">Badge</span>
 
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500 text-white">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-yellow-500 text-white">Badge</span>
                                     <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-600">Badge</span> */}
-                                  </td>
-                                  <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
-                                      <ActionDropdown letterId={val.letter_id} />
-                                  </td>
-                              </tr>
-                              )
-                            })}
+                              </td>
+                              <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
+                                <ActionDropdown letterId={val.letter_id} />
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="grid gap-3 px-6 py-4 border-t border-gray-200 md:flex md:justify-between md:items-center dark:border-neutral-700">
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-neutral-400">
+                      <span className="font-semibold text-gray-800 dark:text-neutral-200">
+                        12
+                      </span>{" "}
+                      results
+                    </p>
+                  </div>
 
-                          </tbody>
-                          </table>
-                      </div>
-                      <div className="grid gap-3 px-6 py-4 border-t border-gray-200 md:flex md:justify-between md:items-center dark:border-neutral-700">
-                        <div>
-                          <p className="text-sm text-gray-600 dark:text-neutral-400">
-                            <span className="font-semibold text-gray-800 dark:text-neutral-200">12</span> results
-                          </p>
-                        </div>
-
-                        <div>
-                          {/* <div className="inline-flex gap-x-2">
+                  <div>
+                    {/* <div className="inline-flex gap-x-2">
                             <button type="button" className="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
                               <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                               Prev
@@ -1043,82 +1338,175 @@ export default function SubContent({ activeMenu }) {
                               <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                             </button>
                           </div> */}
-                          <nav className="flex items-center gap-x-1" aria-label="Pagination">
-                            {/* <button type="button" onClick={(e) => setPage(page - 1)} className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Previous" disabled="true"> */}
-                            <button type="button" onClick={(e) => setPage(page - 1)} className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Previous" disabled={page === 0 ? true : false}>
-                              <svg className="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="m15 18-6-6 6-6"></path>
-                              </svg>
-                              <span>Previous</span>
-                            </button>
-                            <div className="flex items-center gap-x-1">
-                              <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center bg-gray-200 text-gray-800 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-300 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-600 dark:text-white dark:focus:bg-neutral-500" aria-current="page">1</button>
-                              <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">2</button>
-                              <button type="button" className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">3</button>
-                            </div>
-                            <button type="button" onClick={(e) => setPage(page + 1)} className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Next" disabled={disableNext}>
-                              <span>Next</span>
-                              <svg className="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="m9 18 6-6-6-6"></path>
-                              </svg>
-                            </button>
-                          </nav>
-                        </div>
+                    <nav
+                      className="flex items-center gap-x-1"
+                      aria-label="Pagination"
+                    >
+                      {/* <button type="button" onClick={(e) => setPage(page - 1)} className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10" aria-label="Previous" disabled="true"> */}
+                      <button
+                        type="button"
+                        onClick={(e) => setPage(page - 1)}
+                        className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+                        aria-label="Previous"
+                        disabled={page === 0 ? true : false}
+                      >
+                        <svg
+                          className="shrink-0 size-3.5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m15 18-6-6 6-6"></path>
+                        </svg>
+                        <span>Previous</span>
+                      </button>
+                      <div className="flex items-center gap-x-1">
+                        <button
+                          type="button"
+                          className="min-h-[38px] min-w-[38px] flex justify-center items-center bg-gray-200 text-gray-800 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-300 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-600 dark:text-white dark:focus:bg-neutral-500"
+                          aria-current="page"
+                        >
+                          1
+                        </button>
+                        <button
+                          type="button"
+                          className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+                        >
+                          2
+                        </button>
+                        <button
+                          type="button"
+                          className="min-h-[38px] min-w-[38px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+                        >
+                          3
+                        </button>
                       </div>
-                    </div>
-                  </div>
-              </div>
-          </div>
-      )}
-
-      {activeMenu === "manajemen_role" && (
-          <div>
-            <div className="flex items-center justify-between">
-              <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                  Manajemen Role
-              </h2>
-              <CreateRole />
-            </div>
-              <div className="flex flex-col">
-                <div className="-m-1.5 overflow-x-auto">
-                  <div className="p-1.5 min-w-full inline-block align-middle">
-                    <div className="overflow-hidden">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead>
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Role</th>
-                            <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start">Access</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          <tr>
-                            <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">Admin</td>
-                            <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
-                                <div className="flex gap-x-6">
-                                  <div className="flex">
-                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-1" />
-                                    <label htmlFor="hs-checkbox-group-1" className="text-sm text-gray-500 ms-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</label>
-                                  </div>
-
-                                  <div className="flex">
-                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-2" />
-                                    <label htmlFor="hs-checkbox-group-2" className="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet.</label>
-                                  </div>
-
-                                  <div className="flex">
-                                    <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-checkbox-group-3" />
-                                    <label htmlFor="hs-checkbox-group-3" className="text-sm text-gray-500 ms-3">Lorem ipsum dolor sit amet consectetur.</label>
-                                  </div>
-                                </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                      <button
+                        type="button"
+                        onClick={(e) => setPage(page + 1)}
+                        className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+                        aria-label="Next"
+                        disabled={disableNext}
+                      >
+                        <span>Next</span>
+                        <svg
+                          className="shrink-0 size-3.5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m9 18 6-6-6-6"></path>
+                        </svg>
+                      </button>
+                    </nav>
                   </div>
                 </div>
               </div>
+            </div>
           </div>
+        </div>
+      )}
+
+      {activeMenu === "manajemen_role" && (
+        <div>
+          <div className="flex items-center justify-between">
+            <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
+              Manajemen Role
+            </h2>
+            <CreateRole />
+          </div>
+          <div className="flex flex-col">
+            <div className="-m-1.5 overflow-x-auto">
+              <div className="p-1.5 min-w-full inline-block align-middle">
+                <div className="overflow-hidden">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start"
+                        >
+                          Role
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-start"
+                        >
+                          Access
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      <tr>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
+                          Admin
+                        </td>
+                        <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
+                          <div className="flex gap-x-6">
+                            <div className="flex">
+                              <input
+                                type="checkbox"
+                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                id="hs-checkbox-group-1"
+                              />
+                              <label
+                                htmlFor="hs-checkbox-group-1"
+                                className="text-sm text-gray-500 ms-3"
+                              >
+                                Lorem, ipsum dolor sit amet consectetur
+                                adipisicing elit.
+                              </label>
+                            </div>
+
+                            <div className="flex">
+                              <input
+                                type="checkbox"
+                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                id="hs-checkbox-group-2"
+                              />
+                              <label
+                                htmlFor="hs-checkbox-group-2"
+                                className="text-sm text-gray-500 ms-3"
+                              >
+                                Lorem ipsum dolor sit amet.
+                              </label>
+                            </div>
+
+                            <div className="flex">
+                              <input
+                                type="checkbox"
+                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                id="hs-checkbox-group-3"
+                              />
+                              <label
+                                htmlFor="hs-checkbox-group-3"
+                                className="text-sm text-gray-500 ms-3"
+                              >
+                                Lorem ipsum dolor sit amet consectetur.
+                              </label>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
