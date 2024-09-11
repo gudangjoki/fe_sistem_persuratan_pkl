@@ -16,7 +16,7 @@ import { Menu } from "@headlessui/react";
 import { InvalidTokenError } from "jwt-decode";
 // const lazyListLetter = lazy(() => import('./ListLetter'));
 
-import { snakeCase } from 'lodash';
+import _, { snakeCase } from "lodash";
 
 /* eslint-disable react/prop-types */
 function ActionDropdown(props) {
@@ -526,17 +526,17 @@ function CreateRole() {
   };
 
   const [checkedPermissions, setCheckedPermissions] = useState({
-    "role_name": "",
-    "permission_id": []
+    role_name: "",
+    permission_id: [],
   });
 
   const handleRoleName = (e) => {
     const { name, value } = e.target;
     setCheckedPermissions((prev) => ({
       ...prev,
-      [name]: snakeCase(value)
-    }))
-  }
+      [name]: snakeCase(value),
+    }));
+  };
 
   const handleCheckboxChange = (val) => {
     setCheckedPermissions((prevState) => {
@@ -556,32 +556,31 @@ function CreateRole() {
     });
   };
 
-    const addNewRole = async (e) => {
-      e.preventDefault();
-      setToken(getCookie);
+  const addNewRole = async (e) => {
+    e.preventDefault();
+    setToken(getCookie);
 
-      const BASE_URL = 'http://localhost:8000/api/role';
-      const options = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      }
-      const body = JSON.stringify(checkedPermissions);
+    const BASE_URL = "http://localhost:8000/api/role";
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const body = JSON.stringify(checkedPermissions);
 
-      try {
-        const response = await axios.post(BASE_URL, body, options);
-        console.log(response.data);
-        setCheckedPermissions({
-          "role_name": "",
-          "permission_id": []
-        });
-      } catch (error) {
-        console.log(error);
-      }
-
+    try {
+      const response = await axios.post(BASE_URL, body, options);
+      console.log(response.data);
+      setCheckedPermissions({
+        role_name: "",
+        permission_id: [],
+      });
+    } catch (error) {
+      console.log(error);
     }
-  
+  };
+
   useEffect(() => {
     console.log(checkedPermissions);
   }, [checkedPermissions]);
@@ -684,8 +683,12 @@ function CreateRole() {
                                         type="checkbox"
                                         className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                                         id={`letter-checkbox-${val.id}`}
-                                        checked={checkedPermissions.permission_id.includes(val.id)}
-                                        onChange={() => handleCheckboxChange(val)}
+                                        checked={checkedPermissions.permission_id.includes(
+                                          val.id
+                                        )}
+                                        onChange={() =>
+                                          handleCheckboxChange(val)
+                                        }
                                       />
                                       <span className="sr-only">Checkbox</span>
                                     </label>
@@ -727,8 +730,12 @@ function CreateRole() {
                                         type="checkbox"
                                         className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                                         id={`users-checkbox-${val.id}`}
-                                        checked={checkedPermissions.permission_id.includes(val.id)}
-                                        onChange={() => handleCheckboxChange(val)}
+                                        checked={checkedPermissions.permission_id.includes(
+                                          val.id
+                                        )}
+                                        onChange={() =>
+                                          handleCheckboxChange(val)
+                                        }
                                       />
                                       <span className="sr-only">Checkbox</span>
                                     </label>
@@ -770,8 +777,12 @@ function CreateRole() {
                                         type="checkbox"
                                         className="text-blue-600 border-gray-300 rounded shrink-0 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                                         id={`users-checkbox-${val.id}`}
-                                        checked={checkedPermissions.permission_id.includes(val.id)}
-                                        onChange={() => handleCheckboxChange(val)}
+                                        checked={checkedPermissions.permission_id.includes(
+                                          val.id
+                                        )}
+                                        onChange={() =>
+                                          handleCheckboxChange(val)
+                                        }
                                       />
                                       <span className="sr-only">Checkbox</span>
                                     </label>
@@ -934,6 +945,7 @@ export default function SubContent({ activeMenu }) {
   }, [search]);
 
   useEffect(() => {
+    // if (sessionStorage.getItem('activeMenu') !== "list_surat") return;
     if (debouncedSearch !== null && debouncedSearch !== undefined) {
       getAllLetters();
     }
@@ -985,6 +997,46 @@ export default function SubContent({ activeMenu }) {
       console.log(errs);
     }
   }, [errMsg]);
+
+  const [datas, setDatas] = useState([]);
+  const [loadingFetchRoles, setLoadingFetchRoles] = useState(null);
+
+  const fetchAllRolesWithPermissions = async () => {
+    setToken(getCookie);
+    setLoadingFetchRoles(true);
+
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const BASE_URL = "http://localhost:8000/api/roles";
+    try {
+      const response = await axios.get(BASE_URL, options);
+      const { success, data } = response.data;
+      if (success) {
+        setDatas(data);
+        // setLetterData({});
+      }
+    } catch (error) {
+      // const { errors, message } = error.response.data;
+      console.log(error);
+      // setErrMsg(error.response?.data);
+    } finally {
+      setLoadingFetchRoles(false);
+    }
+  };
+
+  useEffect(() => {
+    // if (sessionStorage.getItem("activeMenu") !== "manajemen_role") return;
+
+    fetchAllRolesWithPermissions();
+  }, []);
+
+  useEffect(() => {
+    console.log(datas["client"]);
+  }, [datas]);
 
   return (
     <div className="col-span-2 p-4 bg-white rounded-lg shadow-md lg:h-fit">
@@ -1449,57 +1501,38 @@ export default function SubContent({ activeMenu }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      <tr>
-                        <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
-                          Admin
-                        </td>
-                        <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
-                          <div className="flex gap-x-6">
-                            <div className="flex">
-                              <input
-                                type="checkbox"
-                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                                id="hs-checkbox-group-1"
-                              />
-                              <label
-                                htmlFor="hs-checkbox-group-1"
-                                className="text-sm text-gray-500 ms-3"
-                              >
-                                Lorem, ipsum dolor sit amet consectetur
-                                adipisicing elit.
-                              </label>
-                            </div>
-
-                            <div className="flex">
-                              <input
-                                type="checkbox"
-                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                                id="hs-checkbox-group-2"
-                              />
-                              <label
-                                htmlFor="hs-checkbox-group-2"
-                                className="text-sm text-gray-500 ms-3"
-                              >
-                                Lorem ipsum dolor sit amet.
-                              </label>
-                            </div>
-
-                            <div className="flex">
-                              <input
-                                type="checkbox"
-                                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                                id="hs-checkbox-group-3"
-                              />
-                              <label
-                                htmlFor="hs-checkbox-group-3"
-                                className="text-sm text-gray-500 ms-3"
-                              >
-                                Lorem ipsum dolor sit amet consectetur.
-                              </label>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
+                      {!loadingFetchRoles &&
+                        Object.entries(datas).map(
+                          ([role, permissions], idx) => (
+                            <tr key={idx}>
+                              <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
+                                {_.startCase(_.toLower(role))}
+                              </td>
+                              <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
+                                <div className="flex gap-x-6">
+                                  {permissions.map((permission) => (
+                                    <div
+                                      key={permission.permission_id}
+                                      className="flex"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                        id={`checkbox-${permission.permission_id}`}
+                                      />
+                                      <label
+                                        htmlFor={`checkbox-${permission.permission_id}`}
+                                        className="text-sm text-gray-500 ms-3"
+                                      >
+                                        {permission.permission_name}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              </td>
+                            </tr>
+                          )
+                        )}
                     </tbody>
                   </table>
                 </div>
