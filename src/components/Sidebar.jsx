@@ -1,7 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Sidebar() {
+    const location = useLocation();
+    
+    const isActive = (path) => location.pathname === path;
     return (
         <div id="hs-application-sidebar" className="hs-overlay [--body-scroll:true] lg:[--overlay-backdrop:false] [--is-layout-affect:true] [--auto-close:lg]
             hs-overlay-open:translate-x-0
@@ -27,12 +30,12 @@ export default function Sidebar() {
                     <nav className="flex flex-col flex-wrap w-full p-3 hs-accordion-group" data-hs-accordion-always-open>
                     <ul className="flex flex-col space-y-1">
                         <li>
-                        <a className="flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100" href="/board">
+                        <a className={`flex items-center gap-x-3.5 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-100 ${isActive('/board') ? 'bg-gray-100 text-gray-800 focus:outline-none focus:bg-gray-100' : 'text-gray-800'}`} href="/board">
                             <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                             Dashboard
                         </a>
                         </li>
-                        <li><a className="w-full flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100" href="/dashboard">
+                        <li><a className={`flex items-center gap-x-3.5 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-100 ${isActive('/dashboard') ? 'bg-gray-100 text-gray-800 focus:outline-none focus:bg-gray-100' : 'text-gray-800'}`} href="/dashboard">
                             <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                             Persuratan
                         </a>

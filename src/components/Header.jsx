@@ -1,4 +1,20 @@
+import { useLocation } from 'react-router-dom';
+
 export default function Header() {
+    const location = useLocation();
+    
+    const getBreadcrumb = (path) => {
+        switch (path) {
+            case '/board':
+                return 'Dashboard';
+            case '/dashboard':
+                return 'Persuratan';
+            case '/profile':
+                return 'Profile';
+            default:
+                return 'Home';
+        }
+    };
     return (
         <div className="sticky inset-x-0 top-0 z-20 px-4 bg-white border-y sm:px-6 lg:px-8">
             <div className="flex items-center py-2">
@@ -33,7 +49,7 @@ export default function Header() {
                 <ol className="flex items-center justify-end w-full ms-auto md:justify-between gap-x-1 md:gap-x-3">
                     <div className="flex items-center ms-3 whitespace-nowrap">
                         <li className="flex items-center text-sm text-gray-800 dark:text-neutral-400">
-                            Application Layout
+                            Navigasi
                             <svg
                                 className="shrink-0 mx-3 overflow-visible size-2.5 text-gray-400"
                                 width="16"
@@ -51,7 +67,7 @@ export default function Header() {
                             </svg>
                         </li>
                         <li className="text-sm font-semibold text-gray-800 truncate dark:text-neutral-400" aria-current="page">
-                            Dashboard
+                            {getBreadcrumb(location.pathname)}
                         </li>
                     </div>
 

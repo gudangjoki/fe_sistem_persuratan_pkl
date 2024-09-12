@@ -14,6 +14,7 @@ import { Dialog } from "@headlessui/react";
 
 import { Menu } from "@headlessui/react";
 import { InvalidTokenError } from "jwt-decode";
+import { motion } from 'framer-motion';
 // const lazyListLetter = lazy(() => import('./ListLetter'));
 
 import _, { snakeCase } from "lodash";
@@ -152,7 +153,35 @@ function ActionDropdown(props) {
       [name]: value,
     }));
   };
-
+  const updateLetter = async () => {
+    const letterIdPassed = Cookies.get("letterId"); // Mendapatkan ID surat dari cookie
+    setToken(getCookie);
+    const BASE_URL = `http://localhost:8000/api/letter/update/${letterIdPassed}`;
+    
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  
+    const payload = {
+      letter_no: detailLetter.letter_no,
+      letter_title: detailLetter.letter_title,
+      letter_type: detailLetter.letter_type,
+      letter_keywords: keywordLetter,
+      letter_path: detailLetter.letter_path,
+    };
+  
+    try {
+      const response = await axios.put(BASE_URL, payload, options);
+      console.log("Surat berhasil diperbarui:", response.data);
+      closeEditModal(); // Menutup modal setelah update sukses
+    } catch (error) {
+      console.error("Gagal memperbarui surat:", error);
+    }
+  };
+  
   useEffect(() => {
     console.log(detailLetter);
   }, [detailLetter]);
@@ -469,7 +498,7 @@ function ActionDropdown(props) {
                       name="btn-save-edit-surat"
                       property="mt-5 px-10 bg-yellow-500 text-white hover:bg-yellow-600 focus:outline-none focus:bg-yellow-600 disabled:opacity-50 disabled:pointer-events-none"
                       content="Update"
-                      saveLetter=""
+                      saveLetter={updateLetter}
                     />
                   </div>
                 </div>
@@ -803,21 +832,22 @@ function CreateRole() {
               </div>
             </form>
           </Dialog.Description>
+          <div className="flex justify-between mt-5">
+            <button
+              onClick={closeCreateModal}
+              className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md"
+            >
+              Close
+            </button>
 
-          <button
-            onClick={closeCreateModal}
-            className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md"
-          >
-            Close
-          </button>
-
-          <button
-            // onClick={}
-            className="px-4 py-2 mt-4 ml-2 text-white bg-green-500 rounded-md"
-            onClick={addNewRole}
-          >
-            Save
-          </button>
+            <button
+              // onClick={}
+              className="px-4 py-2 mt-4 ml-2 text-white bg-green-600 rounded-md"
+              onClick={addNewRole}
+            >
+              Save
+            </button>
+          </div>             
         </div>
       </Dialog>
     </>
@@ -1039,7 +1069,12 @@ export default function SubContent({ activeMenu }) {
   }, [datas]);
 
   return (
-    <div className="col-span-2 p-4 bg-white rounded-lg shadow-md lg:h-fit">
+    <motion.div className="col-span-2 p-4 bg-white rounded-lg shadow-md lg:h-fit"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       {msgSuccess && (
         <div
           className="p-4 border-t-2 border-teal-500 rounded-lg bg-teal-50 dark:bg-teal-800/30"
@@ -1470,7 +1505,6 @@ export default function SubContent({ activeMenu }) {
           </div>
         </div>
       )}
-
       {activeMenu === "manajemen_role" && (
         <div>
           <div className="flex items-center justify-between">
@@ -1598,6 +1632,6 @@ export default function SubContent({ activeMenu }) {
           
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

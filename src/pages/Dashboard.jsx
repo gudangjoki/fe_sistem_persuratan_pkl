@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import Content from '../components/Content';
 import { useAuth } from '../hooks/useAuth';
+import { motion } from 'framer-motion';
 import { useAxiosReload } from '../hooks/useAxiosReload';
 import { AxiosContentProvider } from '../contexts/AxiosReloadContext';
 import OverlayItem from "../components/OverlayItem";
@@ -43,9 +44,13 @@ const Dashboard = () => {
         <main id="content">
           <Header />
           <Sidebar />
-          <div className="h-screen bg-gray-100 content-wrapper">
+          <motion.div className="h-screen bg-gray-100 content-wrapper"
+            initial={{ opacity: 0, y: 50 }}  // Starts from below and transparent
+            animate={{ opacity: 1, y: 0 }}   // Ends at normal position and fully visible
+            transition={{ duration: 0.6 }}
+          >
             <Outlet />
-          </div>
+          </motion.div>
           <OverlayItem 
             contentId="notification-overlay" 
             title="Notification" 
