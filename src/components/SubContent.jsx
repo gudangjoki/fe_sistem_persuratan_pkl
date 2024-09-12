@@ -154,7 +154,7 @@ function ActionDropdown(props) {
     }));
   };
   const updateLetter = async () => {
-    const letterIdPassed = Cookies.get("letterId"); // Mendapatkan ID surat dari cookie
+    const letterIdPassed = Cookies.get("letterId"); 
     setToken(getCookie);
     const BASE_URL = `http://localhost:8000/api/letter/update/${letterIdPassed}`;
     
@@ -176,7 +176,7 @@ function ActionDropdown(props) {
     try {
       const response = await axios.put(BASE_URL, payload, options);
       console.log("Surat berhasil diperbarui:", response.data);
-      closeEditModal(); // Menutup modal setelah update sukses
+      closeEditModal();
     } catch (error) {
       console.error("Gagal memperbarui surat:", error);
     }
