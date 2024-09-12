@@ -6,6 +6,7 @@ export default function SubMenu({ setActiveMenu }) {
     { label: "Buat Surat", icon: "fas fa-user", key: "buat_surat" },
     { label: "List Surat", icon: "fas fa-users", key: "list_surat" },
     { label: "Manajemen Role", icon: "fas fa-vial", key: "manajemen_role" },
+    { label: "Change Role", icon: "fas fa-vial", key: "ubah_role" },
   ];
 
   // Periksa sessionStorage saat pertama kali render

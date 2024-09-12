@@ -654,7 +654,7 @@ function CreateRole() {
                             <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
                               <td className="size-px whitespace-nowrap">
                                 <div className="px-6 py-3">
-                                  <span className="text-md font-bold text-gray-600 dark:text-neutral-400">
+                                  <span className="font-bold text-gray-600 text-md dark:text-neutral-400">
                                     Manajemen Surat
                                   </span>
                                 </div>
@@ -700,7 +700,7 @@ function CreateRole() {
                             <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
                               <td className="size-px whitespace-nowrap">
                                 <div className="px-6 py-3">
-                                  <span className="text-md font-bold text-gray-600 dark:text-neutral-400">
+                                  <span className="font-bold text-gray-600 text-md dark:text-neutral-400">
                                     Manajemen User
                                   </span>
                                 </div>
@@ -747,7 +747,7 @@ function CreateRole() {
                             <tr className="divide-x divide-gray-200 dark:divide-neutral-700">
                               <td className="size-px whitespace-nowrap">
                                 <div className="px-6 py-3">
-                                  <span className="text-md font-bold text-gray-600 dark:text-neutral-400">
+                                  <span className="font-bold text-gray-600 text-md dark:text-neutral-400">
                                     Manajemen Role
                                   </span>
                                 </div>
@@ -1539,6 +1539,63 @@ export default function SubContent({ activeMenu }) {
               </div>
             </div>
           </div>
+        </div>
+      )}
+      {activeMenu === "ubah_role" && (
+        <div>
+          <div className="flex items-center justify-between">
+            <h2 className="mb-3 text-xl font-semibold text-gray-800 dark:text-neutral-200">
+              Ubah Role
+            </h2>
+          </div>
+          <form>
+            <div className="grid gap-4 mt-6 lg:gap-6">
+              <div>
+                <label
+                  htmlFor="hs-judul-surat"
+                  className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  onChange=""
+                  name="hs-email-user"
+                  id="hs-email-user"
+                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                />
+              </div>
+
+              <div className="block mb-2 text-sm font-medium text-gray-700 dark:text-white">
+                <div>
+                  <label
+                    htmlFor="hs-tipe-surat"
+                    className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    Role User
+                  </label>
+                  <SelectItem name="hs-role-user" tokenProps="" />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-end">
+                  <Button
+                    name="btn-save-role"
+                    property="mt-5 px-10 "
+                    content="Save"
+                    saveLetter=""
+                  />
+                </div>
+                {/* <Button
+                      type="button"
+                      className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                      
+                      >
+                      Create Letter */}
+              </div>
+            </div>
+          </form>
+          
         </div>
       )}
     </div>

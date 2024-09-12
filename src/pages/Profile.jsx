@@ -15,7 +15,7 @@ export default function Board() {
     };
 
     return (
-        <div className="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8">
+        <div className="px-4 py-10 mx-auto max-full sm:px-6 lg:px-8">
             <div className="p-4 bg-white shadow rounded-xl sm:p-7">
                 <div className="mb-8">
                     <h2 className="text-xl font-bold text-gray-800">

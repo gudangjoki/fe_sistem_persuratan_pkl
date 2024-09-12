@@ -10,16 +10,15 @@ import ResetPassword from "./pages/ResetPassword";
 import RoleBasedRoutes from "./components/RoleBasedRoutes";
 import Board from "./pages/Board";
 import Profile from "./pages/Profile";
+import SubContent from "./components/Content";
 import { AuthenticationProvider } from "./contexts/authContext";
 
 const Root = () => {
   const location = useLocation();
 
+  // Preline autoInit for route changes
   useEffect(() => {
-    if (
-      window.HSStaticMethods &&
-      typeof window.HSStaticMethods.autoInit === "function"
-    ) {
+    if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
       window.HSStaticMethods.autoInit();
     }
   }, [location.pathname]);
@@ -41,15 +40,12 @@ const Root = () => {
             <Route path="/otp-verification" element={<VerifikasiOTP />} />
             <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
-
-          {/* <Route element={<RoleBasedRoutes allowedRoles={["no_auth"]} />}>
-            
-          </Route> */}
           
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/board" element={<Board />} />
-          <Route path="/profile" element={<Profile />} />
-          
+          <Route path="/" element={<Dashboard />}>
+            <Route path="board" element={<Board />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="dashboard" element={<SubContent />} />
+          </Route>
         </Routes>
       </AuthenticationProvider>
     </Suspense>
