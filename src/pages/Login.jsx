@@ -68,7 +68,7 @@ const Login = () => {
   }
 
   useEffect(() => {
-    if (success) navigate('/dashboard');
+    if (success) navigate('../dashboard');
 
     return () => {
       setCredential(null);

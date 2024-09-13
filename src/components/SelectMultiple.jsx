@@ -18,7 +18,7 @@ export default function SelectMultiple(props) {
 
   const [token, setToken] = useState(getCookie);
 
-  const { letterData, setLetterData } = useLetter();
+  const { letterData, setLetterData, letterKeyAh, setLetterKeyAh } = useLetter();
 
   // const BASE_URL = 'http://localhost:8000/api/keywords?index=0&search=ma';
   const BASE_URL = "http://localhost:8000/api/keywords";
@@ -50,7 +50,6 @@ export default function SelectMultiple(props) {
     }
   };
 
-  const [letterKeyAh, setLetterKeyAh] = useState([]);
   //combine with select item component, data letter full butuh buat update
   const [letterFull, setLetterFull] = useState([]);
   const [loadNew, setLoadNew] = useState(null);
@@ -95,7 +94,12 @@ export default function SelectMultiple(props) {
       getKeywordEdit(letterId);  
     }
 
+    // if(!sessionStorage.getItem("detail")) {
+    //   getAllType();
+    // }
+
     getAllType();
+
   }, [token]);
 
   const handleKeywords = (selectedKeywords) => {
@@ -193,7 +197,7 @@ export default function SelectMultiple(props) {
       styles={customStyles}
       isDisabled={disabledSelect}
       style={{ appearance: "none", background: "none", paddingRight: "30px" }}
-      value={(!loadingFetch && letterKeyAh.length > 0) ? letterKeyAh : undefined}
+      value={(!loadingFetch && letterKeyAh?.length > 0) ? letterKeyAh : undefined}
     />
   );
 }

@@ -30,6 +30,8 @@ function ActionDropdown(props) {
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
+  const [defaultKeyLetterId, setDefaultKeyLetterId] = useState([]);
+
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const { loadingFetch, setLoadingFetch } = useLetter();
@@ -119,19 +121,23 @@ function ActionDropdown(props) {
 
       setDetailLetter(data);
       let datas = [];
+      let keysDataLetters = [];
       let keyword = {
         value: "",
         label: "",
       };
-      keywords_data.foreach((val) => {
-        keyword.value = val.keyword_name;
-        keyword.label = val.id;
-
+      keywords_data.forEach((val) => {
+        let keyword = {
+          value: val.keyword_name,
+          label: val.id,
+        };
+        keysDataLetters.push(val.id);
         datas.push(keyword);
       });
+      setDefaultKeyLetterId(keysDataLetters);
       setKeywordLetter(datas);
       // setFetched(true);
-      Cookies.remove("letterId");
+      // Cookies.remove("letterId");
     } catch (error) {
       console.log(error);
     }
@@ -146,6 +152,12 @@ function ActionDropdown(props) {
 
   // }, []);
 
+  const { letterKeyAh, letterFull } = useLetter();
+
+  useEffect(() => {
+    console.log(defaultKeyLetterId);
+  }, [defaultKeyLetterId])
+
   const editChangeLetter = (e) => {
     const { name, value } = e.target;
     setDetailLetter((prev) => ({
@@ -156,7 +168,7 @@ function ActionDropdown(props) {
   const updateLetter = async () => {
     const letterIdPassed = Cookies.get("letterId"); 
     setToken(getCookie);
-    const BASE_URL = `http://localhost:8000/api/letter/update/${letterIdPassed}`;
+    const BASE_URL = `http://localhost:8000/api/letter/${letterIdPassed}`;
     
     const options = {
       headers: {
@@ -168,8 +180,8 @@ function ActionDropdown(props) {
     const payload = {
       letter_no: detailLetter.letter_no,
       letter_title: detailLetter.letter_title,
-      letter_type: detailLetter.letter_type,
-      letter_keywords: keywordLetter,
+      letter_id_type: letterFull.letter_id_type !== undefined ? letterFull.letter_id_type : detailLetter.letter_id_type.id,
+      letter_keywords: letterKeyAh.letter_keywords ?? defaultKeyLetterId,
       letter_path: detailLetter.letter_path,
     };
   
@@ -948,6 +960,7 @@ export default function SubContent({ activeMenu }) {
       const letter = response.data;
       console.log(letter.data);
       setLetterData(letter.data);
+      // setLetterTotalFetched()
       if (letter.data.length < 10) {
         setDisableNext(true);
       } else {
@@ -975,7 +988,7 @@ export default function SubContent({ activeMenu }) {
   }, [search]);
 
   useEffect(() => {
-    // if (sessionStorage.getItem('activeMenu') !== "list_surat") return;
+    if (sessionStorage.getItem('activeMenu') !== "list_surat") return;
     if (debouncedSearch !== null && debouncedSearch !== undefined) {
       getAllLetters();
     }
@@ -1059,7 +1072,7 @@ export default function SubContent({ activeMenu }) {
   };
 
   useEffect(() => {
-    // if (sessionStorage.getItem("activeMenu") !== "manajemen_role") return;
+    if (sessionStorage.getItem("activeMenu") !== "manajemen_role") return;
 
     fetchAllRolesWithPermissions();
   }, []);
@@ -1407,7 +1420,7 @@ export default function SubContent({ activeMenu }) {
                   <div>
                     <p className="text-sm text-gray-600 dark:text-neutral-400">
                       <span className="font-semibold text-gray-800 dark:text-neutral-200">
-                        12
+                        22
                       </span>{" "}
                       results
                     </p>

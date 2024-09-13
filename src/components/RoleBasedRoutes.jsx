@@ -88,7 +88,7 @@ const RoleBasedRoutes = ({ allowedRoles }) => {
     <Outlet context={{ "role": decoded?.role }} />
   ) : allowedRoles[0] != "" && !loading ? (
     // bisa ditambahin redirect ke tempat awal user
-    <Navigate to="/" state={{ from: location }} replace />
+    <Navigate to="/not_found" state={{ from: location }} replace />
   ) : (
     <Navigate to="/login" state={{ from: location }} replace />
   );

@@ -10,6 +10,10 @@ export const LetterContext = createContext({
   setViewLetter: () => {},
   loadingFetch: null,
   setLoadingFetch: () => {},
+  letterKeyAh: null,
+  setLetterKeyAh: () => {},
+  letterFull: null,
+  setLetterFull: () => {},
 });
 
 export const LetterManagementProvider = ({ children }) => {
@@ -27,6 +31,10 @@ export const LetterManagementProvider = ({ children }) => {
   const [viewLetter, setViewLetter] = useState([]);
   const [loadingFetch, setLoadingFetch] = useState(null);
 
+  const [letterKeyAh, setLetterKeyAh] = useState([]);
+  // const [letterTypeAh, setLetterTypeAh] = useState({});
+  const [letterFull, setLetterFull] = useState(null);
+
 
   const letterContextValue = {
     keywords,
@@ -36,7 +44,11 @@ export const LetterManagementProvider = ({ children }) => {
     viewLetter,
     setViewLetter,
     loadingFetch,
-    setLoadingFetch
+    setLoadingFetch,
+    letterKeyAh,
+    setLetterKeyAh,
+    letterFull,
+    setLetterFull
   };
 
   return (
